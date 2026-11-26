@@ -165,7 +165,7 @@ Built by a solo developer in milestones; each ends with tests, a security check 
 | M2 | Accounts (email, Google, password reset), workspaces, onboarding, business profile, brand kit | ✅ Done (local + staging) |
 | M3 | Product library: photos, background-removal cutouts, confirmed prices/phone/address | ✅ Done (local + staging) |
 | M4 | Outline Highlight template + Studio live preview + AI ad copy | ✅ Done (local + staging; AI copy in test mode) |
-| M5 | Media worker, rendering, exports, QR codes, credits | ✅ Done (local) |
+| M5 | Media worker, rendering, exports, QR codes, credits | ✅ Done (local; staging database + functions — worker not hosted yet) |
 | M6 | AI video scenes, AI-enhanced product image + demos to 15–20 real owners | ⏭ Next |
 | M7 | Razorpay payments | Planned |
 | M8 | Free try, admin console, full security audit, launch decision | Planned |
