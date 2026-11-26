@@ -78,7 +78,7 @@ export function checkoutOptions(
     ...(target.kind === 'subscription'
       ? { subscription_id: target.subscriptionId }
       : { order_id: target.orderId, amount: target.amount, currency: target.currency }),
-    name: 'AdMitra AI',
+    name: 'Kalpix',
     description: target.description,
     prefill: email ? { email } : undefined,
     theme: { color: '#1E1E1C' },

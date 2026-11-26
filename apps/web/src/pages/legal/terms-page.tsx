@@ -24,7 +24,7 @@ const sections: LegalSection[] = [
           You are responsible for activity in your workspace, including team members you invite.
         </li>
         <li>
-          You must be at least 18 years old, or use AdMitra on behalf of a business that has agreed
+          You must be at least 18 years old, or use Kalpix on behalf of a business that has agreed
           to these terms.
         </li>
       </ul>
@@ -62,7 +62,7 @@ const sections: LegalSection[] = [
           AI-generated output is a draft. You must check prices, offers, dates and contact details
           before you publish an ad, and you are responsible for the ads you publish.
         </li>
-        <li>Free-plan exports carry a &ldquo;Made with AdMitra&rdquo; watermark.</li>
+        <li>Free-plan exports carry a &ldquo;Made with Kalpix&rdquo; watermark.</li>
       </ul>
     ),
   },

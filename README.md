@@ -1,4 +1,4 @@
-# AdMitra AI
+# Kalpix
 
 AI ad studio for Indian businesses: signature animated ads, AI video scenes, posters and copy from one saved business profile.
 

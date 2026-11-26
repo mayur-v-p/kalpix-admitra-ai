@@ -31,7 +31,7 @@ const FONT_FACES = [
 function RenderAd(props: OutlineHighlightProps) {
   const [handle] = useState(() => delayRender('Loading fonts'));
   useEffect(() => {
-    Promise.all(FONT_FACES.map((f) => document.fonts.load(f, 'AdMitra अ')))
+    Promise.all(FONT_FACES.map((f) => document.fonts.load(f, 'Kalpix अ')))
       .then(() => continueRender(handle))
       .catch((e) => cancelRender(e));
   }, [handle]);
@@ -40,7 +40,7 @@ function RenderAd(props: OutlineHighlightProps) {
 
 const placeholder: OutlineHighlightProps = {
   aspect: '9:16',
-  businessName: 'AdMitra',
+  businessName: 'Kalpix',
   headline: 'Preview',
   productName: 'Product',
   cta: 'Order now',

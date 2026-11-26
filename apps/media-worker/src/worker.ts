@@ -1,4 +1,4 @@
-// AdMitra media worker: claims export jobs from Postgres, renders them, saves the files.
+// Kalpix media worker: claims export jobs from Postgres, renders them, saves the files.
 //
 //   claim_render_job  -> PROCESSING under a lease (another worker takes over if this one dies)
 //   heartbeat         -> progress for the Studio (Realtime) + lease extension

@@ -1,10 +1,10 @@
-# AdMitra AI — Payment Gateway Specification (Razorpay)
+# Kalpix — Payment Gateway Specification (Razorpay)
 
 Nov 24, 2026 · Companion to [prd.md](prd.md) and [architecture.md](architecture.md) (section 6). Built in milestone **M7**.
 
 This replaces the earlier generic payment prompt. Where that prompt clashed with the architecture (Express routes, client-sent prices, client-side "verify" granting access, `isPaid` columns on users, secrets pasted into chat), this document follows the architecture.
 
-AdMitra is a SaaS product. There is no physical delivery; access is digital and granted only after Razorpay confirms the payment through a signed webhook.
+Kalpix is a SaaS product. There is no physical delivery; access is digital and granted only after Razorpay confirms the payment through a signed webhook.
 
 ## Status (Nov 26, 2026): built in M7, locally
 

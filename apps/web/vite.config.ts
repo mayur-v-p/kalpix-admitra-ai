@@ -16,7 +16,7 @@ const functionsDir = realpathSync.native(
   fileURLToPath(new URL('../../supabase/functions', import.meta.url)),
 );
 
-// Vite config for the AdMitra website. Port 5173 matches supabase/config.toml (site_url).
+// Vite config for the Kalpix website. Port 5173 matches supabase/config.toml (site_url).
 export default defineConfig({
   root,
   plugins: [react(), tailwindcss()],

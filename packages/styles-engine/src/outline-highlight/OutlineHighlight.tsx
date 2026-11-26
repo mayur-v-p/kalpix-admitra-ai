@@ -654,7 +654,7 @@ export function OutlineHighlight(props: OutlineHighlightProps) {
             opacity: endIn > 0.5 ? 0.7 : 0,
           })}
         >
-          Made with AdMitra
+          Made with Kalpix
         </p>
       )}
     </AbsoluteFill>

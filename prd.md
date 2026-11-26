@@ -1,10 +1,10 @@
-# AdMitra AI — Complete Product Requirements (v2)
+# Kalpix — Complete Product Requirements (v2)
 
 Nov 24, 2026 · @Mayur Pawar
 
 ## 1. Summary
 
-AdMitra AI is a complete website where any business can create unique advertising (posters, copy and signature animated videos) from one saved business profile. Its edge is a library of signature animated styles, such as an outline that draws itself around the product and its name, and a cute mascot that "creates" the ad, combined with AI-generated video scenes. Ordinary template tools and AI video generators don't offer this combination. This document combines the original v1.0 blueprint with every change agreed since.
+Kalpix is a complete website where any business can create unique advertising (posters, copy and signature animated videos) from one saved business profile. Its edge is a library of signature animated styles, such as an outline that draws itself around the product and its name, and a cute mascot that "creates" the ad, combined with AI-generated video scenes. Ordinary template tools and AI video generators don't offer this combination. This document combines the original v1.0 blueprint with every change agreed since.
 
 **Decisions made so far:**
 
@@ -19,7 +19,7 @@ AdMitra AI is a complete website where any business can create unique advertisin
 
 **Vision.** Any business owner, with no design or video skills, can turn a promotion idea into eye-catching, branded ads in minutes.
 
-**Positioning.** For small and growing businesses that need regular marketing content, AdMitra is an AI ad studio that produces signature animated ads, AI video, posters and copy from one saved business profile. Unlike generic AI tools or blank design canvases, it remembers the business, guides the owner step by step, and produces ads that look unlike everyday template ads.
+**Positioning.** For small and growing businesses that need regular marketing content, Kalpix is an AI ad studio that produces signature animated ads, AI video, posters and copy from one saved business profile. Unlike generic AI tools or blank design canvases, it remembers the business, guides the owner step by step, and produces ads that look unlike everyday template ads.
 
 **Problems it solves.**
 
@@ -41,7 +41,7 @@ AdMitra AI is a complete website where any business can create unique advertisin
 
 ## 3. Target users, industries and languages
 
-AdMitra launches in India with three industries, then expands to any business through industry configuration packs.
+Kalpix launches in India with three industries, then expands to any business through industry configuration packs.
 
 | Segment | Main jobs | Timing |
 |---|---|---|
@@ -98,7 +98,7 @@ A small, cute animated character walks on screen and "creates" the ad.
 | 10–14 s | It points at the offer as the price pops up; optional voice line. |
 | 14–20 s | It celebrates beside the end card. |
 
-- AdMitra designs its own original mascot; it must not resemble any existing character.
+- Kalpix designs its own original mascot; it must not resemble any existing character.
 - Built once as a rigged character with an action library: walk in, wave, paint, unbox, unveil, point, cook, cut hair, hand over a bag, celebrate.
 - Industry outfits (chef's apron, salon scissors, shopping bags), background scenes, and voice lines in supported languages.
 - Later: each business creates its own mascot (face, outfit, colours) that appears in all its ads.
@@ -164,13 +164,13 @@ Releases: P0 = Prototype, MVP, EF = Early follow-on, G = Growth, S = Scale (see 
 | FR-27 | Bulk generation | One ad per product from a catalogue or spreadsheet | G |
 | FR-28 | Mini landing page | Shareable page per campaign with video, offer, map, call and order buttons | G |
 | FR-29 | Results tracking | QR scans, link clicks and enquiries per ad | G |
-| FR-30 | Public showcase | Opt-in gallery of real ads with "Made with AdMitra" | G |
+| FR-30 | Public showcase | Opt-in gallery of real ads with "Made with Kalpix" | G |
 | FR-31 | Social scheduling | Post to connected social accounts, subject to platform approval | S |
 | FR-32 | Teams and agencies | Client workspaces, roles, approvals | S |
 | FR-33 | Franchise mode | Head office locks templates; branches add local details | S |
 | FR-34 | Brand co-op ads | Brands issue co-branded ads to stockists | S |
 | FR-35 | Template marketplace | Outside designers sell styles and templates for a revenue share | S |
-| FR-36 | Developer API | Other software generates ads through AdMitra | S |
+| FR-36 | Developer API | Other software generates ads through Kalpix | S |
 | FR-37 | Print partners | Order printed banners, pamphlets and standees through partner print shops | S |
 | FR-38 | AI video scenes | Image-to-video clips from product photos and industry scene types, combined with code-built styles per section 4.3; composite mode by default; template text overlays; owner approval before export; 9:16 master clip cached per product and scene | MVP |
 
@@ -301,7 +301,7 @@ Prices are hypotheses to test with real owners, after calculating AI, AI video, 
 
 - Credits scale with render length and resolution; AI video scenes, 3D, voice and AI photoshoots cost more. No unlimited video in fixed plans.
 - Billing: UPI Autopay, annual plans pushed before Diwali, GST invoices.
-- Watermark on free exports ("Made with AdMitra") so every shared ad promotes the product.
+- Watermark on free exports ("Made with Kalpix") so every shared ad promotes the product.
 
 **Growth channels.**
 
@@ -345,7 +345,7 @@ Each phase ends with a test that must pass before the next starts. Timings are e
 
 **Open decisions.**
 
-- [ ] Final product name, after domain and trademark checks ("AdMitra AI" is provisional).
+- [ ] Final product name, after domain and trademark checks ("Kalpix" is provisional).
 - [x] Rendering framework: **Remotion** (decided 24 Nov 2026). Buy the company licence before the team passes the free-licence limit.
 - [ ] Mascot design: commission an illustrator or design in-house; one mascot or a small cast.
 - [ ] Which three signature styles follow Outline Highlight.

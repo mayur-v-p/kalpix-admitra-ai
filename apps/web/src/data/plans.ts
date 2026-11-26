@@ -19,7 +19,7 @@ export const plans: Plan[] = [
     name: 'Free',
     price: 0,
     period: 'forever',
-    audience: 'Try AdMitra with your own product',
+    audience: 'Try Kalpix with your own product',
     features: [
       '10 credits to start',
       'Posters and Outline Highlight videos',

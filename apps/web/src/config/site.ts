@@ -4,7 +4,7 @@
  * applying for a live Razorpay account (payment-gateway.md, go-live checklist).
  */
 export const site = {
-  name: 'AdMitra AI',
+  name: 'Kalpix',
   legalName: '[Registered business name]',
   supportEmail: '[support@your-domain.in]',
   supportPhone: '[+91 XXXXX XXXXX]',

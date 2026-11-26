@@ -45,7 +45,7 @@ create table public.credit_packs (
 -- Prices and credits are hypotheses (PRD section 10). 1 credit = one export size; an AI
 -- scene costs 2.
 insert into public.plans (id, name, price_inr, monthly_credits, audience, features, highlighted, sort) values
-  ('free', 'Free', 0, 10, 'Try AdMitra with your own product',
+  ('free', 'Free', 0, 10, 'Try Kalpix with your own product',
    array['10 credits to start', 'Posters and Outline Highlight videos', 'Brand kit and product library', 'Watermarked exports'], false, 0),
   ('starter', 'Starter', 399, 60, 'Solo local business',
    array['60 credits every month', 'Posters and Outline Highlight videos', 'AI video scenes', 'All standard sizes, no watermark'], false, 1),

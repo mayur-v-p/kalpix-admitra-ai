@@ -1,7 +1,7 @@
 {
   "name": "admitra",
   "private": true,
-  "description": "AdMitra AI — AI ad studio (monorepo)",
+  "description": "Kalpix — AI ad studio (monorepo)",
   "workspaces": [
     "apps/*",
     "packages/*"

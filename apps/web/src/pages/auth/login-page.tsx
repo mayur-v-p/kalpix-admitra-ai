@@ -71,7 +71,7 @@ export function LoginPage() {
           {isSubmitting ? 'Logging in…' : 'Log in'}
         </Button>
       </form>
-      <SwitchAuthLink question="New to AdMitra?" to="/signup" label="Create a free account" />
+      <SwitchAuthLink question="New to Kalpix?" to="/signup" label="Create a free account" />
     </AuthShell>
   );
 }

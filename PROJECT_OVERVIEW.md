@@ -1,12 +1,12 @@
-# AdMitra AI: Project Overview
+# Kalpix: Project Overview
 
-*Status as of 26 November 2026. This document is self-contained: it explains what AdMitra is, the problem it solves in India, how it works, how it is built and where development stands. The detailed specs are in [prd.md](prd.md) (requirements), [architecture.md](architecture.md) (technical design), [payment-gateway.md](payment-gateway.md), [security.md](security.md) and [responsivness.md](responsivness.md).*
+*Status as of 26 November 2026. This document is self-contained: it explains what Kalpix is, the problem it solves in India, how it works, how it is built and where development stands. The detailed specs are in [prd.md](prd.md) (requirements), [architecture.md](architecture.md) (technical design), [payment-gateway.md](payment-gateway.md), [security.md](security.md) and [responsivness.md](responsivness.md).*
 
 ---
 
 ## 1. In one sentence
 
-**AdMitra AI is a website where any Indian small business can turn one product photo and an offer into eye-catching, accurate, branded ads (animated videos, posters and ad copy) in minutes, without a designer, a video editor or prompt writing.**
+**Kalpix is a website where any Indian small business can turn one product photo and an offer into eye-catching, accurate, branded ads (animated videos, posters and ad copy) in minutes, without a designer, a video editor or prompt writing.**
 
 "Mitra" means *friend*: an ad-making friend for the local shop.
 
@@ -25,7 +25,7 @@ India has tens of millions of small businesses: kirana and retail stores, restau
 | **Repeated work** | Retyping the shop name, phone, address and logo for every ad, and resizing for every platform (status, reel, post, print). |
 | **Language** | Customers respond to Hindi, Marathi and Hinglish, but most tools handle Indian scripts badly. |
 
-**AdMitra's answer:** save the business details once, then produce ads in *signature animated styles* that ordinary tools can't make, with prices and contact details that are always exactly what the owner confirmed.
+**Kalpix's answer:** save the business details once, then produce ads in *signature animated styles* that ordinary tools can't make, with prices and contact details that are always exactly what the owner confirmed.
 
 ---
 
@@ -150,7 +150,7 @@ Every business-owned table carries `workspace_id`, so one rule isolates every bu
 | Growth | ₹899/month | Regular campaigns, all 2D styles, mascot, more AI video |
 | Agency | ₹1,999/month | Freelancers and small agencies |
 
-Credits scale with video length, resolution and AI usage; there is no unlimited video. Free exports carry a "Made with AdMitra" watermark, so every shared ad advertises the product.
+Credits scale with video length, resolution and AI usage; there is no unlimited video. Free exports carry a "Made with Kalpix" watermark, so every shared ad advertises the product.
 
 ---
 

@@ -34,7 +34,7 @@ const sections: LegalSection[] = [
         <li>To provide the service: create, render, store and deliver your ads.</li>
         <li>To bill you, send invoices and handle refunds.</li>
         <li>To keep the service safe: rate limits, fraud and misuse prevention.</li>
-        <li>To improve AdMitra, using aggregated usage information.</li>
+        <li>To improve Kalpix, using aggregated usage information.</li>
         <li>
           We do not sell your personal data, and we do not use your uploads to train our own AI
           models.
@@ -132,7 +132,7 @@ export function PrivacyPage() {
       intro={
         <p>
           This policy explains what personal data {site.name} collects, why, who processes it and
-          the choices you have. It applies to the website and the AdMitra app.
+          the choices you have. It applies to the website and the Kalpix app.
         </p>
       }
       sections={sections}

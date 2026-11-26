@@ -1,4 +1,4 @@
-# AdMitra media worker: Node 22 + Chrome Headless Shell (Remotion) + bundled FFmpeg.
+# Kalpix media worker: Node 22 + Chrome Headless Shell (Remotion) + bundled FFmpeg.
 # Build from the REPO ROOT (the worker needs the shared styles engine):
 #   docker build -f apps/media-worker/Dockerfile -t admitra-media-worker .
 # Run (values from your secret store, never baked into the image):

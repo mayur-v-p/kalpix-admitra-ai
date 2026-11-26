@@ -23,7 +23,7 @@ export function LegalPage({
         <h1 className="uppercase">{title}</h1>
         <p className="mt-3 text-sm text-muted">Last updated: {site.lastUpdated}</p>
         <p className="mt-4 rounded-xl border border-lamp-deep/40 bg-lamp-soft p-4 text-sm">
-          Draft for review: this text must be checked by a qualified lawyer before AdMitra accepts
+          Draft for review: this text must be checked by a qualified lawyer before Kalpix accepts
           live payments.
         </p>
         <div className="mt-6 text-base text-ink/90 md:text-lg">{intro}</div>

@@ -1,10 +1,10 @@
-# AdMitra AI — React + Supabase Architecture & Design Plan
+# Kalpix — React + Supabase Architecture & Design Plan
 
 Nov 24, 2026 · @Mayur Pawar · Companion to [prd.md](prd.md) (Complete Product Requirements v2)
 
 ## 1. Summary
 
-AdMitra uses React for the website and Supabase for the backend and database (Auth, Postgres, Storage, Edge Functions, Queues, Realtime, Cron), plus a separate **media worker** for video rendering, outline tracing and AI video post-processing. This replaces the Java Spring Boot + MySQL stack in the original v2 requirements.
+Kalpix uses React for the website and Supabase for the backend and database (Auth, Postgres, Storage, Edge Functions, Queues, Realtime, Cron), plus a separate **media worker** for video rendering, outline tracing and AI video post-processing. This replaces the Java Spring Boot + MySQL stack in the original v2 requirements.
 
 Changes to the original reference diagram:
 
@@ -417,4 +417,4 @@ Agreed 24 Nov 2026: the public website comes first, then the product is built ar
 - [Supabase: Edge Functions limits](https://supabase.com/docs/guides/functions/limits)
 - [Supabase: Edge Function wall clock time limit](https://supabase.com/docs/guides/troubleshooting/edge-function-wall-clock-time-limit-reached-Nk38bW)
 - [Supabase Queues](https://supabase.com/docs/guides/queues)
-- [prd.md](prd.md): AdMitra AI — Complete Product Requirements (v2)
+- [prd.md](prd.md): Kalpix — Complete Product Requirements (v2)

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
-/** AdMitra wordmark: a single highlight stroke inside the mark. */
+/** Kalpix wordmark: a single highlight stroke inside the mark. */
 export function Logo({
   className,
   tone = 'dark',
@@ -12,7 +12,7 @@ export function Logo({
   return (
     <Link
       to="/"
-      aria-label="AdMitra AI home"
+      aria-label="Kalpix home"
       className={cn('inline-flex min-h-11 items-center gap-2.5', className)}
     >
       <svg viewBox="0 0 32 32" className="h-8 w-8 shrink-0" aria-hidden="true">
@@ -36,7 +36,7 @@ export function Logo({
           tone === 'dark' ? 'text-ink' : 'text-paper',
         )}
       >
-        AdMitra <span className="font-light">AI</span>
+        Kalpix
       </span>
     </Link>
   );

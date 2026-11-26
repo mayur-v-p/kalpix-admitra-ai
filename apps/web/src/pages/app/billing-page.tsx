@@ -223,7 +223,7 @@ export function BillingPage() {
           )}
           <p className="mt-3 text-base">
             {s.watermark
-              ? 'Exports carry the “Made with AdMitra” watermark.'
+              ? 'Exports carry the “Made with Kalpix” watermark.'
               : 'Exports have no watermark.'}
           </p>
         </div>
