@@ -1,0 +1,9 @@
+{
+  "name": "@admitra/shared-types",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Generated Supabase types and job parameter schemas shared by web, worker and Edge Functions. Filled from M2.",
+  "main": "src/index.ts",
+  "types": "src/index.ts"
+}

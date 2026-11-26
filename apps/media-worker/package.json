@@ -1,0 +1,30 @@
+{
+  "name": "@admitra/media-worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Node media worker (Remotion + headless Chromium + FFmpeg): renders Studio ads to MP4, GIF and PNG.",
+  "scripts": {
+    "start": "tsx src/worker.ts",
+    "dev": "tsx --env-file-if-exists=.env src/worker.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@admitra/styles-engine": "*",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jost": "^5.3.0",
+    "@fontsource/noto-sans-devanagari": "^5.3.0",
+    "@remotion/bundler": "4.0.547",
+    "@remotion/renderer": "4.0.547",
+    "@supabase/supabase-js": "^2.119.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "4.0.547",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.3.0",
+    "typescript": "^6.0.3"
+  }
+}
