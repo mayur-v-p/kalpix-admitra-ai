@@ -2,6 +2,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(37);
+-- Jobs left in the local database by manual runs would be claimed first; set them aside
+-- (this transaction is rolled back at the end).
+update public.generation_jobs set status = 'FAILED' where status in ('QUEUED', 'PROCESSING');
 
 insert into auth.users (id, email) values
   ('a5555555-5555-5555-5555-555555555555', 'a5@example.com'),

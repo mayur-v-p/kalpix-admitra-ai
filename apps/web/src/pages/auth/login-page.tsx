@@ -6,6 +6,7 @@ import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { FormMessage, TextField } from '@/components/ui/form-field';
 import { friendlyAuthError } from '@/features/auth/auth-errors';
+import { useCaptcha } from '@/features/auth/captcha';
 import { loginSchema, safeNextPath } from '@/features/auth/auth-schemas';
 import { signInWithGoogle } from '@/features/auth/google';
 import { supabase } from '@/lib/supabase';
@@ -18,6 +19,7 @@ export function LoginPage() {
   const location = useLocation();
   const next = safeNextPath((location.state as { from?: string } | null)?.from);
   const [error, setError] = useState<string | null>(null);
+  const captcha = useCaptcha();
   const {
     register,
     handleSubmit,
@@ -26,8 +28,15 @@ export function LoginPage() {
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     setError(null);
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    if (signInError) return setError(friendlyAuthError(signInError));
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: { captchaToken: captcha.token },
+    });
+    if (signInError) {
+      captcha.reset(); // a captcha token works once
+      return setError(friendlyAuthError(signInError));
+    }
     navigate(next, { replace: true });
   });
 
@@ -66,8 +75,15 @@ export function LoginPage() {
             Forgot password?
           </Link>
         </div>
+        {captcha.widget}
         {error && <FormMessage tone="error">{error}</FormMessage>}
-        <Button type="submit" variant="dark" size="lg" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="dark"
+          size="lg"
+          className="w-full"
+          disabled={isSubmitting || !captcha.ready}
+        >
           {isSubmitting ? 'Logging in…' : 'Log in'}
         </Button>
       </form>

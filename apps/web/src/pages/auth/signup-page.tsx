@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { FormMessage, TextField } from '@/components/ui/form-field';
 import { plans } from '@/data/plans';
 import { friendlyAuthError } from '@/features/auth/auth-errors';
+import { useCaptcha } from '@/features/auth/captcha';
 import { signupSchema } from '@/features/auth/auth-schemas';
 import { signInWithGoogle } from '@/features/auth/google';
 import { supabase } from '@/lib/supabase';
@@ -21,6 +22,7 @@ export function SignupPage() {
   const chosenPlan = plans.find((p) => p.id === params.get('plan') && p.price > 0);
   const [error, setError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const captcha = useCaptcha();
   const {
     register,
     handleSubmit,
@@ -35,9 +37,13 @@ export function SignupPage() {
       options: {
         data: { full_name: fullName }, // display name only; never used for access decisions
         emailRedirectTo: `${window.location.origin}/app`,
+        captchaToken: captcha.token,
       },
     });
-    if (signUpError) return setError(friendlyAuthError(signUpError));
+    if (signUpError) {
+      captcha.reset();
+      return setError(friendlyAuthError(signUpError));
+    }
     // If the project does not require email confirmation, the user is already signed in.
     if (data.session) return navigate('/app', { replace: true });
     // Same message whether or not the email was already registered (no account enumeration).
@@ -134,8 +140,15 @@ export function SignupPage() {
             </p>
           )}
         </div>
+        {captcha.widget}
         {error && <FormMessage tone="error">{error}</FormMessage>}
-        <Button type="submit" variant="dark" size="lg" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="dark"
+          size="lg"
+          className="w-full"
+          disabled={isSubmitting || !captcha.ready}
+        >
           {isSubmitting ? 'Creating account…' : 'Create account'}
         </Button>
       </form>

@@ -21,6 +21,7 @@ export type ExportErrorCode =
   | 'rate_limited'
   | 'invalid_formats'
   | 'clip_not_approved'
+  | 'trial_limit'
   | 'export_failed';
 
 export class ExportError extends Error {
@@ -39,6 +40,7 @@ const KNOWN: ExportErrorCode[] = [
   'rate_limited',
   'invalid_formats',
   'clip_not_approved',
+  'trial_limit',
 ];
 
 /** Reserves credits, snapshots the confirmed facts and queues the render, in one transaction. */

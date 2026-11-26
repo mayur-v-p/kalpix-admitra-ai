@@ -32,6 +32,8 @@ Deno.serve(async (req) => {
   });
   const { data: userData, error: userError } = await asUser.auth.getUser();
   if (userError || !userData.user) return json(req, { error: 'unauthorized' }, 401);
+  // Free try: AI image editing costs money per call, so it needs a real account.
+  if (userData.user.is_anonymous) return json(req, { error: 'sign_up_required' }, 403);
 
   let productId: unknown;
   try {

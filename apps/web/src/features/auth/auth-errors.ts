@@ -22,6 +22,12 @@ export function friendlyAuthError(error: AuthError | Error | null | undefined): 
     case 'validation_failed':
     case 'provider_disabled':
       return 'Google sign-in is not switched on yet. Please use email and password for now.';
+    case 'captcha_failed':
+      return 'The security check did not pass. Please complete it again and retry.';
+    case 'anonymous_provider_disabled':
+      return 'The free try is not switched on yet. Please create a free account instead.';
+    case 'email_exists':
+      return 'This email already has an account. Log in with it instead.';
     case 'session_expired':
     case 'otp_expired':
       return 'This link has expired. Please request a new one.';

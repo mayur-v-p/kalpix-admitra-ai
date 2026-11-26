@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { FormMessage, TextAreaField, TextField } from '@/components/ui/form-field';
 import { useSignedUrl } from '@/features/workspace/hooks';
 import type { Product } from './api';
+import { trialLimitText } from '@/lib/trial';
 import {
   PHOTO_TYPES,
   productSchema,
@@ -56,8 +57,11 @@ export function ProductForm({ product, submitLabel, onSubmit, extraActions }: Pr
       await onSubmit(values, photo);
       setPhoto(null);
       setSaved(true);
-    } catch {
-      setError('Could not save the product. Please check your connection and try again.');
+    } catch (e) {
+      setError(
+        trialLimitText(e) ??
+          'Could not save the product. Please check your connection and try again.',
+      );
     }
   });
 

@@ -48,7 +48,12 @@ Deno.serve(async (req) => {
     },
   );
 
-  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'unknown';
+  // cf-connecting-ip is set by Cloudflare in front of Supabase and cannot be faked by the
+  // visitor; x-forwarded-for's first entry can, so it is only the local-development fallback.
+  const ip =
+    req.headers.get('cf-connecting-ip') ??
+    req.headers.get('x-real-ip') ??
+    ((req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'unknown');
   const { data: allowed } = await admin.rpc('consume_rate_limit', {
     p_key: `qr:${await sha256(ip)}`,
     p_max: MAX_PER_MINUTE,

@@ -7,11 +7,15 @@ import {
   Menu,
   Package,
   Palette,
+  Shield,
+  UserRound,
   X,
   type LucideIcon,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { amIPlatformAdmin } from '@/features/admin/api';
 import { useAuth } from '@/features/auth/auth-context';
 import { useWorkspace } from '@/features/workspace/hooks';
 import { cn } from '@/lib/utils';
@@ -26,12 +30,21 @@ const nav: NavItem[] = [
   { label: 'Products', to: '/app/products', Icon: Package },
   { label: 'Campaigns', to: '/app/campaigns', Icon: Megaphone },
   { label: 'Billing', to: '/app/billing', Icon: CreditCard },
+  { label: 'Account', to: '/app/account', Icon: UserRound },
 ];
+const adminItem: NavItem = { label: 'Admin', to: '/admin', Icon: Shield };
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
+  // Only shows the link; the admin console itself checks admin + MFA in the database.
+  const isAdmin = useQuery({
+    queryKey: ['am-i-admin'],
+    queryFn: amIPlatformAdmin,
+    staleTime: 300_000,
+  });
+  const items = isAdmin.data ? [...nav, adminItem] : nav;
   return (
     <ul className="flex flex-col gap-1">
-      {nav.map(({ label, to, Icon, soon }) => (
+      {items.map(({ label, to, Icon, soon }) => (
         <li key={to}>
           {soon ? (
             <span
@@ -95,7 +108,7 @@ export function AppLayout() {
       <p className="truncate font-medium">
         {data?.business?.name ?? data?.workspace.name ?? 'My business'}
       </p>
-      <p className="truncate text-sm text-muted">{user?.email}</p>
+      <p className="truncate text-sm text-muted">{user?.is_anonymous ? 'Free try' : user?.email}</p>
       <button
         type="button"
         onClick={onSignOut}
@@ -176,6 +189,23 @@ export function AppLayout() {
       )}
 
       <main id="app-main" className="min-w-0 px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+        {user?.is_anonymous && pathname !== '/app/account' && (
+          <div
+            role="status"
+            className="mx-auto mb-6 flex max-w-5xl flex-col gap-3 rounded-2xl bg-lamp-soft p-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <p>
+              <strong>Free try:</strong> 1 product and 1 low-resolution video. Save your work to get
+              10 credits; unsaved tries are deleted after 7 days.
+            </p>
+            <Link
+              to="/app/account"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-ink px-5 text-paper"
+            >
+              Save my work
+            </Link>
+          </div>
+        )}
         <Outlet />
       </main>
     </div>

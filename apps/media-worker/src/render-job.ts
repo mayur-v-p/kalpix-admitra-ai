@@ -25,6 +25,8 @@ export type JobParams = FactSnapshot & {
   assets: { productImagePath: string | null; logoPath: string | null };
   qrCode: string | null;
   watermark: boolean;
+  /** Free try: render at half resolution (set by the database for trial workspaces). */
+  lowRes?: boolean;
   /** The approved AI scene (create_render_job refuses unapproved clips). */
   scene?: { style: SceneStyle; filePath: string | null } | null;
 };
@@ -120,7 +122,10 @@ export async function renderJob(opts: {
         puppeteerInstance: browser,
         logLevel: 'error',
       });
-      const { width, height } = composition;
+      // Free-try exports are half size; the watermark is forced on by the database.
+      const scale = p.lowRes ? 0.5 : 1;
+      const width = Math.round(composition.width * scale);
+      const height = Math.round(composition.height * scale);
       const slug = aspect.replace(':', 'x');
       const common = {
         composition,
@@ -144,6 +149,7 @@ export async function renderJob(opts: {
         pixelFormat: 'yuv420p',
         imageFormat: 'jpeg',
         jpegQuality: 92,
+        scale,
         outputLocation: mp4,
         onProgress: ({ progress }) => void report(WEIGHT.mp4 * progress),
       });
@@ -151,7 +157,7 @@ export async function renderJob(opts: {
       partDone += WEIGHT.mp4;
 
       const gif = join(dir, `${slug}.gif`);
-      const gifScale = GIF_WIDTH / width;
+      const gifScale = Math.min(1, GIF_WIDTH / composition.width);
       await renderMedia({
         ...common,
         codec: 'gif',
@@ -164,8 +170,8 @@ export async function renderJob(opts: {
       outputs.push({
         kind: 'gif',
         file: gif,
-        w: Math.round(width * gifScale),
-        h: Math.round(height * gifScale),
+        w: Math.round(composition.width * gifScale),
+        h: Math.round(composition.height * gifScale),
       });
 
       const png = join(dir, `${slug}.png`);
@@ -176,6 +182,7 @@ export async function renderJob(opts: {
         puppeteerInstance: browser,
         cancelSignal,
         frame: POSTER_FRAME,
+        scale,
         imageFormat: 'png',
         output: png,
         logLevel: 'error',

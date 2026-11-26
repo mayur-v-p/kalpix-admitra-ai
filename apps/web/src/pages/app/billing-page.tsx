@@ -76,7 +76,8 @@ export function BillingPage() {
   const [params] = useSearchParams();
   const ws = useWorkspace();
   const workspaceId = ws.data?.workspace.id;
-  const isOwner = ws.data?.role === 'owner';
+  // A free try (anonymous user) cannot buy: the payment functions refuse it too.
+  const isOwner = ws.data?.role === 'owner' && !user?.is_anonymous;
   const status = useBillingStatus(workspaceId);
   const credits = useCredits(workspaceId);
   const plans = usePlans();
@@ -190,7 +191,12 @@ export function BillingPage() {
       <div className="flex flex-col gap-4" aria-live="polite">
         {error && <FormMessage tone="error">{billingErrorText[error]}</FormMessage>}
         {notice && <FormMessage tone="info">{notice}</FormMessage>}
-        {!isOwner && (
+        {user?.is_anonymous && (
+          <FormMessage tone="info">
+            Save your free try as an account first (Account page), then you can choose a plan.
+          </FormMessage>
+        )}
+        {!isOwner && !user?.is_anonymous && (
           <FormMessage tone="info">
             Only the owner of this business account can change the plan or buy packs.
           </FormMessage>

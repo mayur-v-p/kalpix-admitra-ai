@@ -53,6 +53,7 @@ describe('login', () => {
     expect(mockAuth.signInWithPassword).toHaveBeenCalledWith({
       email: 'owner@example.com',
       password: 'chai1234',
+      options: { captchaToken: undefined }, // captcha off in tests (no site key)
     });
     await waitFor(() => expect(router.state.location.pathname).toMatch(/^\/app/));
   });

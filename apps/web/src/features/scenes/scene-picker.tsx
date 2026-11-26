@@ -21,6 +21,7 @@ const errorText: Record<string, string> = {
   no_image: 'Add a product photo first.',
   invalid_scene: 'This scene is not available for your business.',
   generation_failed: 'The scene could not be started. Please try again.',
+  trial_cached_only: 'AI scenes come with a free account. Save your work to use them.',
 };
 
 /**

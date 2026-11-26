@@ -346,6 +346,8 @@ Razorpay handles monthly plans (Subscriptions, including UPI Autopay) and one-ti
 
 ### 7.3 Free try
 
+**Built in M8.** Limits live in the database (`private.trial_limits` triggers): 1 credit, 1 product, 2 campaigns, 9:16 only, half resolution (`lowRes`) with the watermark, one trial export per IP per day (hashed `cf-connecting-ip`), no new AI scenes (`trial_cached_only`), no AI image editing, no payments. Confirming an email converts the user (`on_auth_user_converted`): trial ends, work kept, 10 free credits. pg_cron deletes unconverted trials after 7 days. Admin console: `/admin`, `admin_*` functions that require `platform_admins` + `aal2`; every change audited (`audit_events.detail`). Audit: [SECURITY_AUDIT.md](SECURITY_AUDIT.md).
+
 1. The visitor opens `/try`, passes the captcha and is signed in anonymously into a trial workspace.
 2. They upload one product photo and pick a style; the AI scene comes only from the cached demo clips for that industry.
 3. One low-resolution, watermarked export is allowed per device/IP per day (`rate_limits`).

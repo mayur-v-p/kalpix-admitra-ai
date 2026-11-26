@@ -181,6 +181,7 @@ export type Database = {
           action: string;
           actor_id: string | null;
           created_at: string;
+          detail: string | null;
           entity: string;
           entity_id: string | null;
           id: number;
@@ -191,6 +192,7 @@ export type Database = {
           action: string;
           actor_id?: string | null;
           created_at?: string;
+          detail?: string | null;
           entity: string;
           entity_id?: string | null;
           id?: never;
@@ -200,6 +202,7 @@ export type Database = {
           action?: string;
           actor_id?: string | null;
           created_at?: string;
+          detail?: string | null;
           entity?: string;
           entity_id?: string | null;
           id?: never;
@@ -1281,10 +1284,68 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_adjust_credits: {
+        Args: { p_amount: number; p_reason: string; p_workspace: string };
+        Returns: number;
+      };
+      admin_audit_log: {
+        Args: { p_limit?: number };
+        Returns: {
+          action: string;
+          actor_email: string;
+          created_at: string;
+          detail: string;
+          entity: string;
+          entity_id: string;
+          workspace_id: string;
+        }[];
+      };
+      admin_find_users: {
+        Args: { p_query?: string };
+        Returns: {
+          business_name: string;
+          created_at: string;
+          credits: number;
+          email: string;
+          exports: number;
+          is_anonymous: boolean;
+          is_trial: boolean;
+          last_sign_in_at: string;
+          plan_id: string;
+          user_id: string;
+          workspace_id: string;
+        }[];
+      };
+      admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      admin_recent_failures: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          attempts: number;
+          created_at: string;
+          error: string;
+          id: string;
+          kind: string;
+          workspace_id: string;
+        }[];
+      };
+      admin_update_plan: {
+        Args: {
+          p_active: boolean;
+          p_monthly_credits: number;
+          p_plan: string;
+          p_razorpay_plan_id: string;
+        };
+        Returns: undefined;
+      };
+      admin_update_scene_type: {
+        Args: { p_active: boolean; p_credit_cost: number; p_id: string };
+        Returns: undefined;
+      };
       ai_clip_ready: {
         Args: { p_clip: string; p_duration: number; p_file_path: string; p_poster_path: string };
         Returns: boolean;
       };
+      am_i_platform_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       billing_abandon: { Args: { p_ref: string }; Returns: undefined };
       billing_attach: { Args: { p_razorpay_id: string; p_ref: string }; Returns: undefined };
       billing_mark_cancel: { Args: { p_ref: string; p_user: string }; Returns: undefined };

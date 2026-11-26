@@ -7,6 +7,7 @@ import type { Product } from '@/features/products/api';
 import { formatPrice } from '@/features/products/schemas';
 import type { Campaign } from './api';
 import { campaignLanguageOptions, ctaOptions, goalOptions } from './options';
+import { trialLimitText } from '@/lib/trial';
 import { briefSchema, type BriefInput, type BriefValues } from './schemas';
 
 type Props = {
@@ -50,8 +51,8 @@ export function BriefForm({
     setError(null);
     try {
       await onSubmit(values);
-    } catch {
-      setError('Could not save the campaign. Please try again.');
+    } catch (e) {
+      setError(trialLimitText(e) ?? 'Could not save the campaign. Please try again.');
     }
   });
 

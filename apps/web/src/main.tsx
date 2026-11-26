@@ -13,11 +13,17 @@ import '@fontsource/noto-sans-devanagari/400.css';
 import './index.css';
 
 import { AppProviders } from './app-providers';
+import { initMonitoring, reportError } from './lib/monitoring';
 import { routes } from './routes';
+
+void initMonitoring();
 
 const router = createBrowserRouter(routes);
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')!, {
+  onUncaughtError: (error) => reportError(error),
+  onCaughtError: (error) => reportError(error),
+}).render(
   <StrictMode>
     <AppProviders>
       <RouterProvider router={router} />

@@ -16,6 +16,7 @@ export const site = {
 export const mainNav = [
   { label: 'Styles', to: '/styles' },
   { label: 'Pricing', to: '/pricing' },
+  { label: 'Free try', to: '/try' },
   { label: 'Contact', to: '/contact' },
 ] as const;
 
@@ -23,6 +24,7 @@ export const footerNav = {
   product: [
     { label: 'Style gallery', to: '/styles' },
     { label: 'Pricing', to: '/pricing' },
+    { label: 'Free try', to: '/try' },
     { label: 'Create free account', to: '/signup' },
   ],
   company: [

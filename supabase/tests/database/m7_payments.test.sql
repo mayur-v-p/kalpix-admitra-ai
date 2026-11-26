@@ -23,6 +23,7 @@ insert into public.workspace_members (workspace_id, user_id, role)
 select ws_a, 'c7777777-7777-7777-7777-777777777777', 'member' from ids;
 
 update public.plans set razorpay_plan_id = 'plan_TESTstarter01' where id = 'starter';
+update public.plans set razorpay_plan_id = null where id = 'growth'; -- the test needs one plan not linked yet
 
 -- Event builders (the shape of Razorpay's webhook JSON).
 create function pg_temp.sub_ev(ev text, sub text, plan text, status text, ts bigint, pay jsonb default null)

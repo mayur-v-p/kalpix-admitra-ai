@@ -280,6 +280,7 @@ export function StudioPage() {
             workspaceId={c.workspace_id}
             blocked={missing.length > 0}
             notice={sceneNotice}
+            trial={workspace.data?.workspace.is_trial ?? false}
           />
           <ScenePicker
             workspaceId={c.workspace_id}

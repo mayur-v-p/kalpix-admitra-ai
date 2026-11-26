@@ -25,6 +25,7 @@ const reserveErrors: Record<string, number> = {
   invalid_scene: 422,
   invalid_mode: 422,
   no_image: 422,
+  trial_cached_only: 403, // free try: only scenes already made
 };
 
 Deno.serve(async (req) => {

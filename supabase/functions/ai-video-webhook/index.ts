@@ -59,27 +59,40 @@ Deno.serve(async (req) => {
     .maybeSingle();
   if (!clip) return reply({ ok: true, unknown_job: true });
 
+  // If processing fails, forget the event so the provider's retry is handled, not ignored.
+  const forget = async (why: string, code?: string) => {
+    console.error('ai-video-webhook: not processed', why, code);
+    await admin
+      .from('webhook_events')
+      .delete()
+      .eq('source', 'ai_video')
+      .eq('event_id', event.eventId);
+    return reply({ error: 'server_error' }, 500); // the provider retries
+  };
+
+  let result;
   if (event.status === 'failed') {
-    await admin.rpc('fail_ai_clip', {
+    result = await admin.rpc('fail_ai_clip', {
       p_clip: clip.id,
       p_error: 'The AI scene could not be generated.',
     });
   } else if (event.videoUrl) {
     // Real clips are downloaded and normalised by the media worker (ai_clip job), which is
     // connected together with a real provider. Until then, fail safely and return the credits.
-    await admin.rpc('fail_ai_clip', {
+    result = await admin.rpc('fail_ai_clip', {
       p_clip: clip.id,
       p_error: 'Video download is not connected yet.',
     });
   } else {
     // Test mode: the code-drawn stand-in for the scene type; 5 s like a real master clip.
-    await admin.rpc('ai_clip_ready', {
+    result = await admin.rpc('ai_clip_ready', {
       p_clip: clip.id,
       p_file_path: null,
       p_poster_path: null,
       p_duration: 5,
     });
   }
+  if (result.error) return forget('clip update failed', result.error.code);
 
   await admin
     .from('webhook_events')

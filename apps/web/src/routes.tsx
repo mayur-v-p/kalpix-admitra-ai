@@ -2,6 +2,7 @@ import type { RouteObject } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/app-layout';
 import { PublicLayout } from '@/components/layout/public-layout';
 import { RedirectIfSignedIn, RequireAuth } from '@/features/auth/route-guards';
+import { AccountPage } from '@/pages/app/account-page';
 import { BillingPage } from '@/pages/app/billing-page';
 import { BrandPage } from '@/pages/app/brand-page';
 import { BusinessPage } from '@/pages/app/business-page';
@@ -24,6 +25,7 @@ import { TermsPage } from '@/pages/legal/terms-page';
 import { NotFoundPage } from '@/pages/not-found-page';
 import { PricingPage } from '@/pages/pricing-page';
 import { StylesPage } from '@/pages/styles-page';
+import { TryPage } from '@/pages/try-page';
 
 /** Route table (architecture.md section 3, "Routes"). */
 export const routes: RouteObject[] = [
@@ -33,6 +35,7 @@ export const routes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: 'styles', element: <StylesPage /> },
       { path: 'pricing', element: <PricingPage /> },
+      { path: 'try', element: <TryPage /> },
       { path: 'contact', element: <ContactPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'terms', element: <TermsPage /> },
@@ -66,6 +69,7 @@ export const routes: RouteObject[] = [
           { path: 'campaigns', element: <CampaignsPage /> },
           { path: 'campaigns/new', element: <CampaignNewPage /> },
           { path: 'billing', element: <BillingPage /> },
+          { path: 'account', element: <AccountPage /> },
           { path: 'payment/success', element: <PaymentResultPage outcome="success" /> },
           { path: 'payment/failed', element: <PaymentResultPage outcome="failed" /> },
           {
@@ -74,6 +78,22 @@ export const routes: RouteObject[] = [
             lazy: async () => ({ Component: (await import('@/pages/app/studio-page')).StudioPage }),
           },
           { path: '*', element: <NotFoundPage /> },
+        ],
+      },
+    ],
+  },
+  {
+    // Platform admins only; every admin call is checked in the database (admin + MFA).
+    path: 'admin',
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          {
+            index: true,
+            lazy: async () => ({ Component: (await import('@/pages/admin/admin-page')).AdminPage }),
+          },
         ],
       },
     ],

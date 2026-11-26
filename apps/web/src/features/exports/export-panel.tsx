@@ -16,6 +16,7 @@ import {
   type ExportErrorCode,
   type RenderJob,
 } from './api';
+import { trialLimitText } from '@/lib/trial';
 import { creditsKey, jobsKey, useCampaignJobs, useCredits, useJobAssets } from './hooks';
 
 const errorText: Record<ExportErrorCode, string> = {
@@ -25,6 +26,7 @@ const errorText: Record<ExportErrorCode, string> = {
   rate_limited: 'You have exported a lot this hour. Please try again a little later.',
   invalid_formats: 'Choose at least one size.',
   clip_not_approved: 'Approve the AI scene first (or choose "No scene"), then export.',
+  trial_limit: 'This is beyond the free try. Save your work to export more.',
   export_failed: 'Could not start the export. Please try again.',
 };
 
@@ -43,6 +45,7 @@ export function ExportPanel({
   workspaceId,
   blocked,
   notice,
+  trial = false,
 }: {
   campaignId: string;
   campaignName: string;
@@ -51,11 +54,14 @@ export function ExportPanel({
   blocked: boolean;
   /** Another reason the export would be refused (e.g. an unapproved AI scene). */
   notice?: string | null;
+  /** Free try: 9:16 only, low resolution (the database enforces it). */
+  trial?: boolean;
 }) {
   const queryClient = useQueryClient();
   const credits = useCredits(workspaceId);
   const jobs = useCampaignJobs(campaignId);
-  const [sizes, setSizes] = useState<Aspect[]>([...ASPECTS]);
+  const offered: readonly Aspect[] = trial ? ['9:16'] : ASPECTS;
+  const [sizes, setSizes] = useState<Aspect[]>([...offered]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -87,7 +93,7 @@ export function ExportPanel({
         queryClient.invalidateQueries({ queryKey: creditsKey(workspaceId) }),
       ]);
     } catch (e) {
-      setError(errorText[e instanceof ExportError ? e.code : 'export_failed']);
+      setError(trialLimitText(e) ?? errorText[e instanceof ExportError ? e.code : 'export_failed']);
     } finally {
       setBusy(false);
     }
@@ -118,7 +124,7 @@ export function ExportPanel({
       <fieldset className="mt-4">
         <legend className="text-sm font-medium">Sizes</legend>
         <div className="mt-2 grid grid-cols-2 gap-2">
-          {ASPECTS.map((a) => (
+          {offered.map((a) => (
             <label
               key={a}
               className={cn(
