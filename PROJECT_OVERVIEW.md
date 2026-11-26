@@ -166,7 +166,7 @@ Built by a solo developer in milestones; each ends with tests, a security check 
 | M3 | Product library: photos, background-removal cutouts, confirmed prices/phone/address | ✅ Done (local + staging) |
 | M4 | Outline Highlight template + Studio live preview + AI ad copy | ✅ Done (local + staging; AI copy in test mode) |
 | M5 | Media worker, rendering, exports, QR codes, credits | ✅ Done (local; staging database + functions — worker not hosted yet) |
-| M6 | AI video scenes, AI-enhanced product image + demos to 15–20 real owners | ✅ Built in test mode (local); real AI providers and owner demos pending |
+| M6 | AI video scenes, AI-enhanced product image + demos to 15–20 real owners | ✅ Built in test mode (local + staging database, functions, webhook secret); real AI providers and owner demos pending |
 | M7 | Razorpay payments | ⏭ Next |
 | M8 | Free try, admin console, full security audit, launch decision | Planned |
 
