@@ -1,9 +1,16 @@
 // Signature-style templates shared by apps/web (Remotion Player preview) and
 // apps/media-worker (render, M5), so the preview and the exported video always match.
-export const STYLES_ENGINE_VERSION = '0.3.0';
+export const STYLES_ENGINE_VERSION = '0.4.0';
 
 export { ASPECTS, FORMATS, FPS, type Aspect } from './formats';
-export type { AdFacts, BrandStyle, OutlineHighlightProps, OutlineStyle } from './types';
+export type {
+  AdFacts,
+  AdScene,
+  BrandStyle,
+  OutlineHighlightProps,
+  OutlineStyle,
+  SceneStyle,
+} from './types';
 export {
   buildAdProps,
   CTA_LABELS,
@@ -17,6 +24,7 @@ export {
   type MissingFact,
 } from './facts';
 export { QrCode, qrPath } from './qr';
+export { SceneLayer } from './scene';
 export { OutlineHighlight } from './outline-highlight/OutlineHighlight';
 export {
   OUTLINE_HIGHLIGHT_DURATION_FRAMES,
@@ -43,6 +51,6 @@ export { TRACE_SIZE, traceImageUrl } from './outline/trace-url';
 export const STYLES = [
   { id: 'outline_highlight', name: 'Outline Highlight', available: true },
   { id: 'mascot', name: 'Mascot Presenter', available: false },
-  { id: 'ai_scene', name: 'AI Scene', available: false },
+  { id: 'ai_scene', name: 'AI Scene', available: false }, // standalone AI Scene ad; scenes behind Outline Highlight work now (M6)
 ] as const;
 export type StyleId = (typeof STYLES)[number]['id'];

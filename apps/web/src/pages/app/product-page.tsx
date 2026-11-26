@@ -13,6 +13,7 @@ import {
   updateProduct,
 } from '@/features/products/api';
 import { ConfirmFact } from '@/features/products/confirm-fact';
+import { EnhancedImage } from '@/features/products/enhanced-image';
 import { productKey, productsKey, useProduct } from '@/features/products/hooks';
 import { ProductForm } from '@/features/products/product-form';
 import { ProductImage } from '@/features/products/product-image';
@@ -150,6 +151,8 @@ export function ProductPage() {
                 </Button>
               )}
             </section>
+
+            <EnhancedImage product={current} onChanged={() => refresh(current.id)} />
 
             <section>
               <h2 className="mb-2 font-sans text-base font-medium tracking-normal normal-case">

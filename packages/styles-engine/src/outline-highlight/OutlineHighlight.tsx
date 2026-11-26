@@ -11,6 +11,7 @@ import {
 } from 'remotion';
 import { containRect, smoothClosedPath } from '../outline/trace';
 import { QrCode } from '../qr';
+import { SceneLayer } from '../scene';
 import type { OutlineHighlightProps, OutlineStyle } from '../types';
 import { highlightLayout, roundedRectPath, type Box } from './layout';
 import { phase, sec } from './timeline';
@@ -234,6 +235,7 @@ export function OutlineHighlight(props: OutlineHighlightProps) {
 
   return (
     <AbsoluteFill style={{ backgroundColor: brand.secondary, overflow: 'hidden' }}>
+      {props.scene && <SceneLayer scene={props.scene} brand={brand} />}
       <AbsoluteFill
         style={{ transform: `scale(${push})`, transformOrigin: `${center.x}px ${center.y}px` }}
       >

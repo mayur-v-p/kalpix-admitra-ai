@@ -82,7 +82,7 @@ Everything appears THROUGH its outline. The brand name and the product name are 
 
 - **Line styles:** brand colour, neon glow, gold.
 - **Owner controls:** line style, brand colours, headline, aspect ratio (later: speed, music).
-- **AI-enhanced product (requested 25 Nov 2026):** the product does not have to be the exact photo. When an image AI provider is connected (FR-20), an AI-enhanced version of the product is generated, the owner picks one, and the animation draws that instead. Until then the uploaded photo is used.
+- **AI-enhanced product (requested 25 Nov 2026):** the product does not have to be the exact photo. When an image AI provider is connected (FR-20), an AI-enhanced version of the product is generated, the owner picks one, and the animation draws that instead. Until then the uploaded photo is used. *(Built in M6 with a test-mode provider that returns the image unchanged; the owner's choice, and its use in every ad and export, already work.)*
 - **How it works:** the product's shape is found in the photo (transparent cutout or plain background) and smoothed into one outline. Thin extras such as steam stay visible but get no outline of their own. If no clear shape is found, the product sits in a neat rounded frame and the outline goes around that.
 - **3D version (later):** the same outline as a lit 3D stroke with camera moves.
 

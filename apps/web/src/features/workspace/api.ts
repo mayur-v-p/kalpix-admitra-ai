@@ -169,7 +169,7 @@ export async function uploadLogo(workspaceId: string, file: File): Promise<strin
   return path;
 }
 
-export type PrivateBucket = 'brand-assets' | 'product-images' | 'renders';
+export type PrivateBucket = 'brand-assets' | 'product-images' | 'renders' | 'ai-clips';
 
 export async function removeFile(path: string, bucket: PrivateBucket = 'brand-assets') {
   await supabase.storage.from(bucket).remove([path]);

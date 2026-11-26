@@ -3,6 +3,7 @@
 import {
   buildAdProps as buildFromSnapshot,
   type AdInputs as EngineAdInputs,
+  type AdScene,
   type Aspect,
   type Outline,
 } from '@admitra/styles-engine';
@@ -25,6 +26,7 @@ export type AdInputs = {
   aspect: Aspect;
   watermark: boolean;
   qrUrl?: string | null;
+  scene?: AdScene | null;
 };
 
 export function buildAdProps(i: AdInputs) {

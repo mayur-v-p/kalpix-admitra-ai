@@ -1,7 +1,7 @@
 {
   "name": "@admitra/styles-engine",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "Shared signature-style templates (Remotion) used by the browser preview and the media worker. Built in M4.",
   "main": "src/index.ts",

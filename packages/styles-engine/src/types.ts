@@ -17,6 +17,12 @@ export type AdFacts = {
   address?: string | null;
 };
 
+/** Look of a scene type's code-drawn stand-in (matches ai_scene_types.preview_style). */
+export type SceneStyle = 'steam' | 'festive' | 'sunrise' | 'spa' | 'studio';
+
+/** The AI scene behind the ad (composite mode). videoUrl = an approved AI clip. */
+export type AdScene = { style: SceneStyle; videoUrl?: string | null };
+
 export type BrandStyle = {
   primary: string;
   secondary: string;
@@ -48,6 +54,8 @@ export type OutlineHighlightProps = {
    * target (WhatsApp/call on the confirmed phone, or the confirmed address) is confirmed.
    */
   qrUrl?: string | null;
+  /** AI scene behind everything (composite: the product and all text stay code-drawn). */
+  scene?: AdScene | null;
   /** Free-plan watermark (PRD 10). */
   watermark?: boolean;
 };

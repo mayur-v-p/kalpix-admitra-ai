@@ -33,7 +33,11 @@ import { ExportPanel } from '@/features/exports/export-panel';
 import { useQrCode } from '@/features/exports/hooks';
 import { ConfirmFact } from '@/features/products/confirm-fact';
 import { useProduct, useProducts } from '@/features/products/hooks';
+import { adImagePath } from '@/features/products/ad-image';
 import { useProductOutline } from '@/features/products/use-product-outline';
+import { sceneFor } from '@/features/scenes/api';
+import { useClip, useSceneTypes } from '@/features/scenes/hooks';
+import { ScenePicker } from '@/features/scenes/scene-picker';
 import { useSignedUrl, useWorkspace } from '@/features/workspace/hooks';
 import { cn } from '@/lib/utils';
 import { PageError, PageLoading } from './page-state';
@@ -56,14 +60,15 @@ export function StudioPage() {
   const campaign = useCampaign(id);
   const products = useProducts(workspace.data?.workspace.id);
   const product = useProduct(campaign.data?.product_id ?? undefined);
-  const cutoutPath =
-    product.data?.cutout_status === 'ready' && product.data.cutout_path
-      ? product.data.cutout_path
-      : product.data?.image_path;
+  // The image ads use: the AI-enhanced one if chosen, else the cutout, else the photo.
+  const cutoutPath = adImagePath(product.data);
   const productUrl = useSignedUrl(cutoutPath, 'product-images');
   const logoUrl = useSignedUrl(workspace.data?.brandKit?.logo_path);
   const outline = useProductOutline(productUrl.data, cutoutPath);
   const qrCode = useQrCode(id);
+  const sceneTypes = useSceneTypes(workspace.data?.business?.industry);
+  const clip = useClip(campaign.data?.scene_clip_id);
+  const sceneVideo = useSignedUrl(clip.data?.file_path, 'ai-clips');
 
   const [aspect, setAspect] = useState<Aspect>('9:16');
   const [drafts, setDrafts] = useState<CopyDrafts | null>(null);
@@ -113,7 +118,16 @@ export function StudioPage() {
     aspect,
     watermark: true, // free plan until billing (M7)
     qrUrl: qrUrlFor(qrCode.data),
+    scene: sceneFor(
+      clip.data,
+      sceneTypes.data?.find((t) => t.id === clip.data?.scene_type_id),
+      sceneVideo.data,
+    ),
   });
+  const sceneNotice =
+    c.scene_clip_id && clip.data && clip.data.status !== 'COMPLETED'
+      ? 'Approve the AI scene first (or choose "No scene"), then export.'
+      : null;
   const { width, height } = FORMATS[aspect];
 
   return (
@@ -262,6 +276,15 @@ export function StudioPage() {
             campaignName={c.name}
             workspaceId={c.workspace_id}
             blocked={missing.length > 0}
+            notice={sceneNotice}
+          />
+          <ScenePicker
+            workspaceId={c.workspace_id}
+            productId={c.product_id}
+            sceneTypes={sceneTypes.data ?? []}
+            clip={clip.data ?? null}
+            testMode={!clip.data || clip.data.provider === 'mock'}
+            onSelect={(clipId) => save({ scene_clip_id: clipId })}
           />
           <section id="facts" className="rounded-2xl border border-line bg-card p-5 shadow-soft">
             <h2 className="font-sans text-lg font-medium tracking-normal normal-case">

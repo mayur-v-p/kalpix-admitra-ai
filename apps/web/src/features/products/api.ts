@@ -137,6 +137,29 @@ export async function requestCutout(productId: string): Promise<void> {
   throw new CutoutError(code);
 }
 
+export async function requestEnhancedImage(productId: string): Promise<void> {
+  const { error } = await supabase.functions.invoke('enhance-product-image', {
+    body: { productId },
+  });
+  if (!error) return;
+  let code = 'enhance_failed';
+  if (error instanceof FunctionsHttpError) {
+    const body = await error.context.json().catch(() => null);
+    if (body && typeof body.error === 'string') code = body.error;
+  }
+  throw new CutoutError(code);
+}
+
+/** The owner's choice between the AI-enhanced image and the original. */
+export async function chooseProductImage(productId: string, useEnhanced: boolean): Promise<void> {
+  check(
+    await supabase.rpc('choose_product_image', {
+      p_product_id: productId,
+      p_use_enhanced: useEnhanced,
+    }),
+  );
+}
+
 export async function confirmProductPrice(productId: string): Promise<void> {
   check(await supabase.rpc('confirm_product_price', { p_product_id: productId }));
 }

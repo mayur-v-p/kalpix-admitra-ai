@@ -3,7 +3,7 @@
 // Prices, offers, dates, phone and address reach the template ONLY if the owner confirmed them.
 import type { Aspect } from './formats';
 import type { Outline } from './outline/trace';
-import type { OutlineHighlightProps, OutlineStyle } from './types';
+import type { AdScene, OutlineHighlightProps, OutlineStyle } from './types';
 
 export type AdLanguage = 'en' | 'hi' | 'mr' | 'hinglish';
 export type AdCta = 'whatsapp' | 'call' | 'visit' | 'book' | 'order';
@@ -103,6 +103,8 @@ export type AdInputs = FactSnapshot & {
   watermark: boolean;
   /** The campaign's QR redirect link; shown only when its target is a confirmed fact. */
   qrUrl?: string | null;
+  /** The campaign's AI scene, if any (approval is enforced when exporting). */
+  scene?: AdScene | null;
 };
 
 /** Which facts are left off the ad because they are not confirmed yet. */
@@ -155,6 +157,7 @@ export function buildAdProps(i: AdInputs): {
       outlineStyle: campaign.outline_style as OutlineStyle,
       watermark: i.watermark,
       qrUrl: i.qrUrl && qrAllowed(i) ? i.qrUrl : null,
+      scene: i.scene ?? null,
       brand: {
         primary: brandKit?.primary_color ?? '#1E1E1C',
         secondary: brandKit?.secondary_color ?? '#F6F4EF',

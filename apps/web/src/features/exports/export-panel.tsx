@@ -24,6 +24,7 @@ const errorText: Record<ExportErrorCode, string> = {
   export_in_progress: 'This campaign is already being exported. It will be ready shortly.',
   rate_limited: 'You have exported a lot this hour. Please try again a little later.',
   invalid_formats: 'Choose at least one size.',
+  clip_not_approved: 'Approve the AI scene first (or choose "No scene"), then export.',
   export_failed: 'Could not start the export. Please try again.',
 };
 
@@ -41,12 +42,15 @@ export function ExportPanel({
   campaignName,
   workspaceId,
   blocked,
+  notice,
 }: {
   campaignId: string;
   campaignName: string;
   workspaceId: string;
   /** Unconfirmed facts remain: the database would refuse the export. */
   blocked: boolean;
+  /** Another reason the export would be refused (e.g. an unapproved AI scene). */
+  notice?: string | null;
 }) {
   const queryClient = useQueryClient();
   const credits = useCredits(workspaceId);
@@ -142,6 +146,11 @@ export function ExportPanel({
           <FormMessage tone="info">{errorText.facts_not_confirmed}</FormMessage>
         </div>
       )}
+      {notice && (
+        <div className="mt-3">
+          <FormMessage tone="info">{notice}</FormMessage>
+        </div>
+      )}
       {error && (
         <div className="mt-3">
           <FormMessage tone="error">{error}</FormMessage>
@@ -151,7 +160,9 @@ export function ExportPanel({
         variant="dark"
         className="mt-4 w-full"
         onClick={start}
-        disabled={blocked || busy || running || sizes.length === 0 || cost > available}
+        disabled={
+          blocked || Boolean(notice) || busy || running || sizes.length === 0 || cost > available
+        }
       >
         <Download className="h-5 w-5" aria-hidden="true" />
         {busy

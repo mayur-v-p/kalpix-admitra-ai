@@ -7,6 +7,7 @@ import {
   STYLES_ENGINE_VERSION,
   type Aspect,
   type FactSnapshot,
+  type SceneStyle,
 } from '@admitra/styles-engine';
 import {
   makeCancelSignal,
@@ -24,6 +25,8 @@ export type JobParams = FactSnapshot & {
   assets: { productImagePath: string | null; logoPath: string | null };
   qrCode: string | null;
   watermark: boolean;
+  /** The approved AI scene (create_render_job refuses unapproved clips). */
+  scene?: { style: SceneStyle; filePath: string | null } | null;
 };
 
 export type RenderJob = {
@@ -68,10 +71,12 @@ export async function renderJob(opts: {
     throw new PermanentError('The export request is incomplete.');
   }
 
-  const [productImageUrl, logoUrl] = await Promise.all([
+  const [productImageUrl, logoUrl, sceneVideoUrl] = await Promise.all([
     signed(db, 'product-images', p.assets?.productImagePath ?? null),
     signed(db, 'brand-assets', p.assets?.logoPath ?? null),
+    signed(db, 'ai-clips', p.scene?.filePath ?? null),
   ]);
+  const scene = p.scene ? { style: p.scene.style, videoUrl: sceneVideoUrl } : null;
   const qrUrl = p.qrCode ? `${config.qrBaseUrl}?c=${p.qrCode}` : null;
 
   const { cancelSignal, cancel } = makeCancelSignal();
@@ -99,6 +104,7 @@ export async function renderJob(opts: {
         logoUrl,
         watermark: p.watermark !== false,
         qrUrl,
+        scene,
       });
       if (missing.length > 0) {
         throw new PermanentError(`Facts not confirmed: ${missing.join(', ')}`);
