@@ -27,7 +27,7 @@ export function ContactPage() {
         <ul className="mt-10 grid gap-4 md:grid-cols-3">
           {items.map(({ Icon, label, value, href }) => (
             <li key={label} className="rounded-2xl border border-line bg-card p-6 shadow-soft">
-              <Icon className="h-6 w-6 text-sage-deep" aria-hidden="true" />
+              <Icon className="h-6 w-6 text-indigo-deep" aria-hidden="true" />
               <p className="mt-4 text-sm font-medium tracking-[0.2em] text-muted uppercase">
                 {label}
               </p>

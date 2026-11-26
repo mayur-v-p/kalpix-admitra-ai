@@ -55,7 +55,7 @@ export function TryPage() {
         <ul className="mt-8 flex flex-col gap-3">
           {included.map((t) => (
             <li key={t} className="flex gap-3 text-lg">
-              <Check className="mt-1.5 h-5 w-5 shrink-0 text-sage-deep" aria-hidden="true" />
+              <Check className="mt-1.5 h-5 w-5 shrink-0 text-indigo-deep" aria-hidden="true" />
               <span>{t}</span>
             </li>
           ))}

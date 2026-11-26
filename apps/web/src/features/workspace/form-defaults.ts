@@ -7,9 +7,10 @@ export function businessDefaults(
   business: BusinessProfile | null,
   location: BusinessLocation | null,
   industry?: string,
+  suggestedName?: string | null,
 ): BusinessFormInput {
   return {
-    name: business?.name ?? '',
+    name: business?.name ?? suggestedName ?? '',
     industry: (business?.industry ?? industry ?? 'food') as BusinessFormInput['industry'],
     description: business?.description ?? '',
     phone: business?.phone ?? '',

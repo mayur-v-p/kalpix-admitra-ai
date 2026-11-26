@@ -41,3 +41,20 @@ export function safeNextPath(value: unknown): string {
     ? value
     : '/app';
 }
+
+/** Query parameter carrying the shop name typed on the home page into sign-up. */
+export const SHOP_PARAM = 'shop';
+
+/**
+ * A shop name from the URL or user metadata, cleaned for use as a form's starting value only
+ * (never for access decisions): plain text, 1–120 characters, or null.
+ */
+export function safeShopName(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const name = Array.from(value)
+    .filter((c) => c.charCodeAt(0) >= 32 && c.charCodeAt(0) !== 127) // no control characters
+    .join('')
+    .trim()
+    .slice(0, 120);
+  return name.length > 0 ? name : null;
+}

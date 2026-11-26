@@ -20,12 +20,12 @@ export function Logo({
           width="32"
           height="32"
           rx="8"
-          className={tone === 'dark' ? 'fill-ink' : 'fill-paper'}
+          className={tone === 'dark' ? 'fill-indigo-deep' : 'fill-paper'}
         />
         <path
           d="M7 22c3-9 6-13 9-13s4 5 2 8-6 3-6 0 5-6 10-5"
           fill="none"
-          stroke="#F2C94C"
+          stroke="var(--color-lamp)"
           strokeWidth="2.4"
           strokeLinecap="round"
         />

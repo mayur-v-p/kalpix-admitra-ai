@@ -178,7 +178,7 @@ export function FormMessage({
       className={cn(
         'rounded-xl p-4 text-base',
         tone === 'error' && 'bg-red-50 text-red-800',
-        tone === 'success' && 'bg-sage-soft text-ink',
+        tone === 'success' && 'bg-indigo-soft text-ink',
         tone === 'info' && 'bg-lamp-soft text-ink',
       )}
     >

@@ -143,7 +143,7 @@ export function StudioPage() {
       </Link>
       <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-medium tracking-[0.25em] text-sage-deep uppercase">Studio</p>
+          <p className="text-sm font-medium tracking-[0.25em] text-indigo-deep uppercase">Studio</p>
           <h1 className="text-3xl uppercase md:text-4xl">{c.name}</h1>
         </div>
         <a href="#export" className={cn(buttonVariants({ variant: 'dark' }), 'w-full md:w-auto')}>

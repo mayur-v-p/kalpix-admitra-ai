@@ -59,7 +59,7 @@ export function CampaignsPage() {
                   {!c.offer_text ? (
                     <span className="text-muted">No offer</span>
                   ) : c.facts_confirmed_at ? (
-                    <span className="inline-flex items-center gap-1.5 text-sage-deep">
+                    <span className="inline-flex items-center gap-1.5 text-indigo-deep">
                       <BadgeCheck className="h-4 w-4" aria-hidden="true" /> Offer confirmed
                     </span>
                   ) : (

@@ -206,7 +206,9 @@ export function AppLayout() {
             </Link>
           </div>
         )}
-        <Outlet />
+        <div key={pathname} className="animate-page-in">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

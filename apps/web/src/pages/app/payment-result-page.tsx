@@ -50,7 +50,7 @@ export function PaymentResultPage({ outcome }: { outcome: 'success' | 'failed' }
         </>
       ) : confirmed ? (
         <>
-          <CheckCircle2 className="mx-auto h-14 w-14 text-sage-deep" aria-hidden="true" />
+          <CheckCircle2 className="mx-auto h-14 w-14 text-indigo-deep" aria-hidden="true" />
           <h1 className="mt-4 text-3xl uppercase">Payment confirmed</h1>
           <p className="mt-3 text-muted">
             Thank you! Your credits have been added and exports no longer carry the watermark.

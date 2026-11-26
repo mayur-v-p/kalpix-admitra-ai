@@ -63,7 +63,7 @@ export function DashboardPage() {
           {steps.map((s) => (
             <li key={s.label} className="flex min-h-14 items-center gap-3 py-2">
               {s.done ? (
-                <CheckCircle2 className="h-6 w-6 shrink-0 text-sage-deep" aria-label="Done" />
+                <CheckCircle2 className="h-6 w-6 shrink-0 text-indigo-deep" aria-label="Done" />
               ) : (
                 <Circle className="h-6 w-6 shrink-0 text-concrete" aria-label="Not done" />
               )}

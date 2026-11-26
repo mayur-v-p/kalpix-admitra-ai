@@ -51,7 +51,7 @@ export function PricingCards() {
           <ul className="mt-5 flex flex-1 flex-col gap-2.5">
             {plan.features.map((f) => (
               <li key={f} className="flex gap-2.5 text-base">
-                <Check className="mt-1 h-4 w-4 shrink-0 text-sage-deep" aria-hidden="true" />
+                <Check className="mt-1 h-4 w-4 shrink-0 text-indigo-deep" aria-hidden="true" />
                 <span>{f}</span>
               </li>
             ))}

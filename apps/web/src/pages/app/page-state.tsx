@@ -35,7 +35,7 @@ export function PageHeader({
   return (
     <div className="mb-8 max-w-2xl">
       {eyebrow && (
-        <p className="mb-2 text-sm font-medium tracking-[0.25em] text-sage-deep uppercase">
+        <p className="mb-2 text-sm font-medium tracking-[0.25em] text-indigo-deep uppercase">
           {eyebrow}
         </p>
       )}

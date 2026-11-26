@@ -172,7 +172,7 @@ export function ScenePicker({
       )}
       {current?.status === 'COMPLETED' && (
         <p className="mt-3 text-sm">
-          <Check className="mr-1 inline h-4 w-4 text-sage-deep" aria-hidden="true" />
+          <Check className="mr-1 inline h-4 w-4 text-indigo-deep" aria-hidden="true" />
           Scene approved for exports.
         </p>
       )}

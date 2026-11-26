@@ -169,10 +169,11 @@ Built by a solo developer in milestones; each ends with tests, a security check 
 | M6 | AI video scenes, AI-enhanced product image + demos to 15–20 real owners | ✅ Built in test mode (local + staging database, functions, webhook secret); real AI providers and owner demos pending |
 | M7 | Razorpay payments: plans, festival pack, billing page, signed webhook, watermark off for paid plans | ✅ Built (local + staging, Razorpay test mode; plans linked). First test payment (Festival pack ₹99) confirmed by the webhook on staging, 26 Nov 2026 |
 | M8 | Free try (/try, captcha, trial limits in the database), admin console (MFA), Sentry wiring, full security audit | ✅ Built (local + staging; staging needs anonymous sign-ins switched on). Audit: **approved with conditions** ([SECURITY_AUDIT.md](SECURITY_AUDIT.md)) |
+| E1 | Website refresh: Option A colours (cream, marigold, indigo), new home page, animations (ad builds in a phone, fade-up, count-up, button shine, badge burst, page change) | ✅ Built (local); preview: claude.ai artifact "Kalpix website — colour and animation options" |
 
 **Quality so far:**
 - 210 database security tests (free-try limits and conversion, admin console with MFA, cross-business access, protected columns, private files, visitors who aren't logged in, credits that can't be forged or spent twice, the export job lifecycle, AI scene cache, review and free retry, payments: duplicate webhooks, wrong amounts, out-of-order events, refunds, owner-only billing)
-- 98 unit tests, including the captcha, monitoring privacy, the free-try messages, the fact gate, the AI-copy number guard, the QR rules, AI scene prompts, webhook signatures (AI video and Razorpay) and the Checkout options
+- 105 unit tests, including the new home page, the captcha, monitoring privacy, the free-try messages, the fact gate, the AI-copy number guard, the QR rules, AI scene prompts, webhook signatures (AI video and Razorpay) and the Checkout options
 - end-to-end browser tests of every M2–M5 flow, including a real export downloaded as MP4, GIF and PNG
 - responsive checks at five screen widths
 

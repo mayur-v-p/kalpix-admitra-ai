@@ -23,8 +23,8 @@ export function ConfirmFact({ label, value, confirmedAt, onConfirm, disabled }: 
 
   if (confirmedAt) {
     return (
-      <p className="flex items-center gap-2 rounded-xl bg-sage-soft px-4 py-3 text-ink">
-        <BadgeCheck className="h-5 w-5 shrink-0 text-sage-deep" aria-hidden="true" />
+      <p className="flex items-center gap-2 rounded-xl bg-indigo-soft px-4 py-3 text-ink">
+        <BadgeCheck className="h-5 w-5 shrink-0 text-indigo-deep" aria-hidden="true" />
         <span>
           {value} confirmed on{' '}
           {new Date(confirmedAt).toLocaleDateString('en-IN', {

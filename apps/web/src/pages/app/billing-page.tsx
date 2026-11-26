@@ -297,7 +297,7 @@ export function BillingPage() {
                     {plan.features.map((f) => (
                       <li key={f} className="flex gap-2.5">
                         <Check
-                          className="mt-1 h-4 w-4 shrink-0 text-sage-deep"
+                          className="mt-1 h-4 w-4 shrink-0 text-indigo-deep"
                           aria-hidden="true"
                         />
                         <span>{f}</span>
@@ -411,7 +411,7 @@ export function BillingPage() {
                   <span
                     className={cn(
                       'shrink-0 font-medium',
-                      ledgerSign[l.kind] === '+' ? 'text-sage-deep' : 'text-ink',
+                      ledgerSign[l.kind] === '+' ? 'text-indigo-deep' : 'text-ink',
                     )}
                   >
                     {ledgerSign[l.kind] ?? ''}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/features/auth/auth-context';
+import { safeShopName } from '@/features/auth/auth-schemas';
 import { saveBusiness } from '@/features/workspace/api';
 import { BrandForm } from '@/features/workspace/brand-form';
 import { BusinessForm } from '@/features/workspace/business-form';
@@ -74,7 +75,7 @@ export function OnboardingPage() {
                     selected ? 'border-ink bg-lamp-soft' : 'border-line hover:border-ink/50',
                   )}
                 >
-                  <Icon className="h-7 w-7 shrink-0 text-sage-deep" aria-hidden="true" />
+                  <Icon className="h-7 w-7 shrink-0 text-indigo-deep" aria-hidden="true" />
                   {label}
                 </button>
               );
@@ -101,7 +102,12 @@ export function OnboardingPage() {
             These details appear on your ads. You can change them any time.
           </p>
           <BusinessForm
-            defaultValues={businessDefaults(data.business, data.location, industry ?? undefined)}
+            defaultValues={businessDefaults(
+              data.business,
+              data.location,
+              industry ?? undefined,
+              safeShopName(user?.user_metadata?.shop_name),
+            )}
             showIndustry={false}
             submitLabel="Save and continue"
             onSubmit={async (values) => {

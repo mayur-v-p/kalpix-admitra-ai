@@ -8,7 +8,7 @@ import { FormMessage, TextField } from '@/components/ui/form-field';
 import { plans } from '@/data/plans';
 import { friendlyAuthError } from '@/features/auth/auth-errors';
 import { useCaptcha } from '@/features/auth/captcha';
-import { signupSchema } from '@/features/auth/auth-schemas';
+import { safeShopName, SHOP_PARAM, signupSchema } from '@/features/auth/auth-schemas';
 import { signInWithGoogle } from '@/features/auth/google';
 import { supabase } from '@/lib/supabase';
 import { AuthShell, Divider, GoogleButton, SwitchAuthLink } from './auth-page';
@@ -22,6 +22,8 @@ export function SignupPage() {
   const chosenPlan = plans.find((p) => p.id === params.get('plan') && p.price > 0);
   const [error, setError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  // The shop name typed on the home page (only a starting value for onboarding).
+  const shopName = safeShopName(params.get(SHOP_PARAM));
   const captcha = useCaptcha();
   const {
     register,
@@ -35,7 +37,8 @@ export function SignupPage() {
       email,
       password,
       options: {
-        data: { full_name: fullName }, // display name only; never used for access decisions
+        // Display values only; never used for access decisions.
+        data: { full_name: fullName, ...(shopName ? { shop_name: shopName } : {}) },
         emailRedirectTo: `${window.location.origin}/app`,
         captchaToken: captcha.token,
       },

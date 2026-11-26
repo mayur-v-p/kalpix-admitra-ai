@@ -58,7 +58,7 @@ export function ProductsPage() {
                     {product.price === null ? (
                       <span className="text-muted">Add a price to use it in offers</span>
                     ) : product.price_confirmed_at ? (
-                      <span className="inline-flex items-center gap-1.5 text-sage-deep">
+                      <span className="inline-flex items-center gap-1.5 text-indigo-deep">
                         <BadgeCheck className="h-4 w-4" aria-hidden="true" /> Price confirmed
                       </span>
                     ) : (

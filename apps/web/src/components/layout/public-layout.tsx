@@ -20,7 +20,10 @@ export function PublicLayout() {
       </a>
       <SiteHeader />
       <main id="main" className="flex-1">
-        <Outlet />
+        {/* Animation 8: each page slides softly into place. */}
+        <div key={pathname} className="animate-page-in">
+          <Outlet />
+        </div>
       </main>
       <SiteFooter />
     </div>

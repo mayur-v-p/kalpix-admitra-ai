@@ -81,7 +81,7 @@ export function checkoutOptions(
     name: 'Kalpix',
     description: target.description,
     prefill: email ? { email } : undefined,
-    theme: { color: '#1E1E1C' },
+    theme: { color: '#2B2A6B' }, // Kalpix indigo
     handler: on.submitted,
     modal: { ondismiss: on.dismissed },
   };
