@@ -168,7 +168,7 @@ Built by a solo developer in milestones; each ends with tests, a security check 
 | M5 | Media worker, rendering, exports, QR codes, credits | ✅ Done (local; staging database + functions — worker not hosted yet) |
 | M6 | AI video scenes, AI-enhanced product image + demos to 15–20 real owners | ✅ Built in test mode (local + staging database, functions, webhook secret); real AI providers and owner demos pending |
 | M7 | Razorpay payments: plans, festival pack, billing page, signed webhook, watermark off for paid plans | ✅ Built (local + staging, Razorpay test mode; plans linked). First test payment (Festival pack ₹99) confirmed by the webhook on staging, 26 Nov 2026 |
-| M8 | Free try (/try, captcha, trial limits in the database), admin console (MFA), Sentry wiring, full security audit | ✅ Built (local). Audit: **approved with conditions** ([SECURITY_AUDIT.md](SECURITY_AUDIT.md)) |
+| M8 | Free try (/try, captcha, trial limits in the database), admin console (MFA), Sentry wiring, full security audit | ✅ Built (local + staging; staging needs anonymous sign-ins switched on). Audit: **approved with conditions** ([SECURITY_AUDIT.md](SECURITY_AUDIT.md)) |
 
 **Quality so far:**
 - 210 database security tests (free-try limits and conversion, admin console with MFA, cross-business access, protected columns, private files, visitors who aren't logged in, credits that can't be forged or spent twice, the export job lifecycle, AI scene cache, review and free retry, payments: duplicate webhooks, wrong amounts, out-of-order events, refunds, owner-only billing)
