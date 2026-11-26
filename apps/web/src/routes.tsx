@@ -2,12 +2,14 @@ import type { RouteObject } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/app-layout';
 import { PublicLayout } from '@/components/layout/public-layout';
 import { RedirectIfSignedIn, RequireAuth } from '@/features/auth/route-guards';
+import { BillingPage } from '@/pages/app/billing-page';
 import { BrandPage } from '@/pages/app/brand-page';
 import { BusinessPage } from '@/pages/app/business-page';
 import { CampaignNewPage } from '@/pages/app/campaign-new-page';
 import { CampaignsPage } from '@/pages/app/campaigns-page';
 import { DashboardPage } from '@/pages/app/dashboard-page';
 import { OnboardingPage } from '@/pages/app/onboarding-page';
+import { PaymentResultPage } from '@/pages/app/payment-result-page';
 import { ProductPage } from '@/pages/app/product-page';
 import { ProductsPage } from '@/pages/app/products-page';
 import { ForgotPasswordPage } from '@/pages/auth/forgot-password-page';
@@ -63,6 +65,9 @@ export const routes: RouteObject[] = [
           { path: 'products/:id', element: <ProductPage /> },
           { path: 'campaigns', element: <CampaignsPage /> },
           { path: 'campaigns/new', element: <CampaignNewPage /> },
+          { path: 'billing', element: <BillingPage /> },
+          { path: 'payment/success', element: <PaymentResultPage outcome="success" /> },
+          { path: 'payment/failed', element: <PaymentResultPage outcome="failed" /> },
           {
             // The Studio pulls in Remotion (~1 MB), so it loads only when opened.
             path: 'campaigns/:id/studio',

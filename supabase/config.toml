@@ -415,6 +415,10 @@ deno_version = 2
 # Local-only function secrets, read from supabase/.env (git-ignored).
 [edge_runtime.secrets]
 AI_VIDEO_WEBHOOK_SECRET = "env(AI_VIDEO_WEBHOOK_SECRET)"
+# Razorpay TEST keys for local development (typed by the owner into supabase/.env).
+RAZORPAY_KEY_ID = "env(RAZORPAY_KEY_ID)"
+RAZORPAY_KEY_SECRET = "env(RAZORPAY_KEY_SECRET)"
+RAZORPAY_WEBHOOK_SECRET = "env(RAZORPAY_WEBHOOK_SECRET)"
 
 [analytics]
 enabled = true
@@ -465,4 +469,17 @@ verify_jwt = true
 # Public on purpose: the video provider calls it. Protected by an HMAC signature
 # (AI_VIDEO_WEBHOOK_SECRET) and event-id de-duplication.
 [functions.ai-video-webhook]
+verify_jwt = false
+
+[functions.razorpay-create-subscription]
+verify_jwt = true
+
+[functions.razorpay-create-order]
+verify_jwt = true
+
+[functions.razorpay-cancel-subscription]
+verify_jwt = true
+
+# Called by Razorpay, so no user token: it verifies Razorpay's signature instead.
+[functions.razorpay-webhook]
 verify_jwt = false

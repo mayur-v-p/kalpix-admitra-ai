@@ -3,6 +3,8 @@ import { ButtonLink } from '@/components/ui/button';
 import { Container, Section } from '@/components/ui/container';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { festivalPack } from '@/data/plans';
+import { useAuth } from '@/features/auth/auth-context';
+import { usePacks } from '@/features/billing/hooks';
 import { formatInr } from '@/lib/utils';
 
 const faqs = [
@@ -29,6 +31,13 @@ const faqs = [
 ];
 
 export function PricingPage() {
+  const { user } = useAuth();
+  const packs = usePacks();
+  const dbPack = packs.data?.find((k) => k.id === 'festival');
+  const pack = dbPack
+    ? { name: dbPack.name, price: dbPack.price_inr, description: dbPack.description }
+    : festivalPack;
+
   return (
     <>
       <Section className="pt-8 md:pt-14">
@@ -50,11 +59,15 @@ export function PricingPage() {
           <div className="flex flex-col gap-6 rounded-2xl border border-line bg-lamp-soft p-6 md:flex-row md:items-center md:justify-between md:p-8">
             <div>
               <p className="font-display text-2xl tracking-[0.12em] uppercase">
-                {festivalPack.name} · {formatInr(festivalPack.price)}
+                {pack.name} · {formatInr(pack.price)}
               </p>
-              <p className="mt-2 max-w-xl text-ink/80">{festivalPack.description}</p>
+              <p className="mt-2 max-w-xl text-ink/80">{pack.description}</p>
             </div>
-            <ButtonLink to="/signup?pack=festival" variant="dark" className="w-full md:w-auto">
+            <ButtonLink
+              to={user ? '/app/billing' : '/signup?pack=festival'}
+              variant="dark"
+              className="w-full md:w-auto"
+            >
               Get the festival pack
             </ButtonLink>
           </div>

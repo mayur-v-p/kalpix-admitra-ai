@@ -6,6 +6,10 @@ This replaces the earlier generic payment prompt. Where that prompt clashed with
 
 AdMitra is a SaaS product. There is no physical delivery; access is digital and granted only after Razorpay confirms the payment through a signed webhook.
 
+## Status (Nov 26, 2026): built in M7, locally
+
+Everything below is built and tested locally (178 database tests, 92 unit tests, a 26-check API run that signs webhook events like Razorpay). A real test payment needs the owner's Razorpay **test** keys and the plans created in the Razorpay dashboard (section 9). Plan credits are hypotheses: Free 10 once, Starter 60/month, Growth 150/month, Agency 400/month, Festival pack 15 credits + no watermark for 30 days.
+
 ## 1. Answers to the setup questions
 
 | Question | Answer |
@@ -114,7 +118,15 @@ Razorpay's browser success callback is **not trusted**. The front end may send t
    - A changed `planId` price in the request is ignored.
    - A member who is not the owner cannot start a subscription.
 
-## 9. Go-live checklist
+## 9. Owner setup (test mode, before the first test payment)
+
+1. Razorpay Dashboard in **Test mode** → Account & Settings → API keys → Generate. Type the Key Id and Key Secret into `supabase/.env` (local) after `RAZORPAY_KEY_ID=` and `RAZORPAY_KEY_SECRET=`. For staging, set them as Supabase secrets yourself (`npx supabase secrets set RAZORPAY_KEY_ID=… RAZORPAY_KEY_SECRET=…`). Never paste them into chat.
+2. Subscriptions → Plans → create three **monthly** plans for exactly ₹399, ₹899 and ₹1,999. The webhook refuses any other amount.
+3. Copy each plan id (`plan_…`) into the `plans` table (`razorpay_plan_id` for starter, growth, agency). A plan without one shows "cannot be bought yet".
+4. Webhooks → Add: URL `https://<project-ref>.supabase.co/functions/v1/razorpay-webhook`, the events in section 7, and a strong secret. Store the same secret as `RAZORPAY_WEBHOOK_SECRET` (staging gets its own; Razorpay refuses localhost URLs, so local webhooks are tested with signed events from a script or through a tunnel).
+5. Pay with Razorpay's test UPI id or test card, then check: the "Confirming your payment" page turns to "confirmed", credits are added once, and the export has no watermark.
+
+## 10. Go-live checklist
 
 - [ ] Live keys and live webhook secret set only in production secrets
 - [ ] Webhook URL points to the production project (HTTPS)

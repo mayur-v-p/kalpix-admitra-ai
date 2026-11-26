@@ -1,6 +1,7 @@
 /**
- * Indicative plans from prd.md section 10. Prices are hypotheses to test with owners.
- * In M7 these come from the `plans` table — the browser never decides a price.
+ * Indicative plans from prd.md section 10, kept in step with the `plans` table seed.
+ * The website shows the database rows; this copy is only shown while they load. Checkout
+ * never uses these numbers: the price is Razorpay's plan, linked in the database.
  */
 export type Plan = {
   id: 'free' | 'starter' | 'growth' | 'agency';
@@ -20,8 +21,8 @@ export const plans: Plan[] = [
     period: 'forever',
     audience: 'Try AdMitra with your own product',
     features: [
-      'A few posters',
-      'One short signature-style video',
+      '10 credits to start',
+      'Posters and Outline Highlight videos',
       'Brand kit and product library',
       'Watermarked exports',
     ],
@@ -33,9 +34,9 @@ export const plans: Plan[] = [
     period: 'month',
     audience: 'Solo local business',
     features: [
-      'Monthly credits',
+      '60 credits every month',
       'Posters and Outline Highlight videos',
-      'A few AI video scenes',
+      'AI video scenes',
       'All standard sizes, no watermark',
     ],
   },
@@ -47,7 +48,7 @@ export const plans: Plan[] = [
     audience: 'Businesses running regular campaigns',
     highlighted: true,
     features: [
-      'More monthly credits',
+      '150 credits every month',
       'All 2D signature styles and the mascot',
       'More AI video scenes',
       'Voiceover and ad variants',
@@ -60,9 +61,9 @@ export const plans: Plan[] = [
     period: 'month',
     audience: 'Freelancers and small agencies',
     features: [
+      '400 credits every month',
       'Several client workspaces',
       'Shared assets',
-      'Higher usage limits',
       'Everything in Growth',
     ],
   },
@@ -71,5 +72,6 @@ export const plans: Plan[] = [
 export const festivalPack = {
   name: 'Festival pack',
   price: 99,
-  description: 'One ready-made festival campaign in several formats. Pay once, no subscription.',
+  description:
+    'One festival campaign in several sizes: 15 credits and no watermark for 30 days. Pay once, no subscription.',
 };

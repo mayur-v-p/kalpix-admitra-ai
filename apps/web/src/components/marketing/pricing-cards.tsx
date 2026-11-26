@@ -1,13 +1,32 @@
 import { Check } from 'lucide-react';
 import { ButtonLink } from '@/components/ui/button';
-import { plans } from '@/data/plans';
+import { plans as fallbackPlans, type Plan } from '@/data/plans';
+import { useAuth } from '@/features/auth/auth-context';
+import { usePlans } from '@/features/billing/hooks';
 import { cn, formatInr } from '@/lib/utils';
 
 /**
- * Plan cards. In M1 every CTA leads to sign-up. In M7 paid plans open Razorpay
- * Checkout from a server-created subscription (payment-gateway.md).
+ * Plan cards, from the `plans` table (the static copy shows only while it loads).
+ * Signed-out visitors go to sign-up; signed-in owners go to Billing, where Razorpay Checkout
+ * opens from a server-created subscription (payment-gateway.md).
  */
 export function PricingCards() {
+  const { user } = useAuth();
+  const { data } = usePlans();
+  const plans: Plan[] = data?.length
+    ? data.map((p) => ({
+        id: p.id as Plan['id'],
+        name: p.name,
+        price: p.price_inr,
+        period: p.price_inr > 0 ? 'month' : 'forever',
+        audience: p.audience,
+        features: p.features,
+        highlighted: p.highlighted,
+      }))
+    : fallbackPlans;
+  const ctaTo = (plan: Plan) =>
+    user ? (plan.price === 0 ? '/app' : `/app/billing?plan=${plan.id}`) : `/signup?plan=${plan.id}`;
+
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {plans.map((plan) => (
@@ -38,7 +57,7 @@ export function PricingCards() {
             ))}
           </ul>
           <ButtonLink
-            to={`/signup?plan=${plan.id}`}
+            to={ctaTo(plan)}
             variant={plan.highlighted ? 'primary' : 'outline'}
             className="mt-6 w-full"
           >

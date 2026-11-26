@@ -25,7 +25,7 @@ const nav: NavItem[] = [
   { label: 'Brand kit', to: '/app/brand', Icon: Palette },
   { label: 'Products', to: '/app/products', Icon: Package },
   { label: 'Campaigns', to: '/app/campaigns', Icon: Megaphone },
-  { label: 'Billing', to: '/app/billing', Icon: CreditCard, soon: 'M7' },
+  { label: 'Billing', to: '/app/billing', Icon: CreditCard },
 ];
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {

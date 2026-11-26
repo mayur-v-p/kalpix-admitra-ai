@@ -167,12 +167,12 @@ Built by a solo developer in milestones; each ends with tests, a security check 
 | M4 | Outline Highlight template + Studio live preview + AI ad copy | ✅ Done (local + staging; AI copy in test mode) |
 | M5 | Media worker, rendering, exports, QR codes, credits | ✅ Done (local; staging database + functions — worker not hosted yet) |
 | M6 | AI video scenes, AI-enhanced product image + demos to 15–20 real owners | ✅ Built in test mode (local + staging database, functions, webhook secret); real AI providers and owner demos pending |
-| M7 | Razorpay payments | ⏭ Next |
+| M7 | Razorpay payments: plans, festival pack, billing page, signed webhook, watermark off for paid plans | ✅ Built (local); needs Razorpay test keys + dashboard plans to take a real test payment; not on staging yet |
 | M8 | Free try, admin console, full security audit, launch decision | Planned |
 
 **Quality so far:**
-- 135 database security tests (cross-business access, protected columns, private files, visitors who aren't logged in, credits that can't be forged or spent twice, the export job lifecycle, AI scene cache, review and free retry)
-- 83 unit tests, including the fact gate, the AI-copy number guard, the QR rules, AI scene prompts and webhook signatures
+- 178 database security tests (cross-business access, protected columns, private files, visitors who aren't logged in, credits that can't be forged or spent twice, the export job lifecycle, AI scene cache, review and free retry, payments: duplicate webhooks, wrong amounts, out-of-order events, refunds, owner-only billing)
+- 92 unit tests, including the fact gate, the AI-copy number guard, the QR rules, AI scene prompts, webhook signatures (AI video and Razorpay) and the Checkout options
 - end-to-end browser tests of every M2–M5 flow, including a real export downloaded as MP4, GIF and PNG
 - responsive checks at five screen widths
 

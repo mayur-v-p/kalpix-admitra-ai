@@ -182,7 +182,7 @@ Credits change only inside `SECURITY DEFINER` Postgres functions. The browser ca
 | `create_render_job(campaign, formats)` (built M5; was `reserve_and_enqueue`) | In **one transaction**: member check, rate limit, fact check (refuses any unconfirmed fact), fact snapshot, lock `credit_balances` (`FOR UPDATE`), check `available`, move credits to `reserved`, insert the QUEUED `generation_jobs` row (the row *is* the queue entry), write ledger `reserve`. Errors carry stable codes: `facts_not_confirmed`, `insufficient_credits`, `export_in_progress`, `rate_limited`, `invalid_formats` |
 | `complete_render_job(job, worker, version)` (M5)  | Worker only. COMPLETED, and moves reserved → spent exactly once; ledger `consume`                      |
 | `fail_render_job(job, worker, error, retry)` (M5) | Worker only. Back to QUEUED while attempts remain; otherwise FAILED and `private.release_job_credits` returns reserved → available once; ledger `release` |
-| `grant_credits(workspace_id, amount, payment_id)` | Adds credits; ledger `grant`; called by the Razorpay webhook (paid plans) or Cron (free plan)           |
+| `private.grant_credits(workspace, amount, payment, note)` (M7) | Adds credits; ledger `grant` with `payment_id`. Called only inside `process_razorpay_event` (the webhook) |
 
 `credit_balances` is the fast, locked balance; `credit_ledger` is the full history and must always add up to it (nightly check by Cron).
 
@@ -230,6 +230,7 @@ Every function checks auth, workspace membership and `rate_limits` before doing 
 | razorpay-create-subscription | Creates a Razorpay subscription for the chosen plan                                          | MVP     |
 | razorpay-create-order        | One-time packs such as the festival pack                                                     | MVP     |
 | razorpay-webhook             | Verifies the signature; de-duplicates by event id; updates subscriptions, payments, credits  | MVP     |
+| razorpay-cancel-subscription | Cancels the owner's plan at the end of the paid month (built M7)                             | MVP     |
 | qr-redirect                  | `verify_jwt = false`. `GET ?c=<12-char code>` → target worked out at scan time from **confirmed** facts only (WhatsApp/call on the confirmed phone, map at the confirmed address; never a URL from the request, so no open redirect); per-IP rate limit with a hashed IP; logs a count-only scan in `qr_scans`. Short domain later | MVP (built M5) |
 | ai-photoshoot                | Calls the image API to place a product in a scene                                            | EF      |
 | tts-voice                    | Creates voice lines                                                                          | EF      |
@@ -309,6 +310,10 @@ Razorpay handles monthly plans (Subscriptions, including UPI Autopay) and one-ti
 
 - Each row in `plans` maps to a plan created in the Razorpay dashboard (`razorpay_plan_id`).
 - The browser opens Razorpay Checkout with an id from an Edge Function; it never sees the secret key.
+- **Built in M7.** Database: `plans` and `credit_packs` (the only prices), `subscriptions`, `payments`, `credit_ledger.payment_id`. Service-only functions `billing_prepare_subscription`, `billing_prepare_order`, `billing_attach`, `billing_abandon`, `billing_prepare_cancel`, `billing_mark_cancel` and `process_razorpay_event`; members read `billing_status(workspace)`. Only the workspace **owner** can buy or cancel.
+- **One event, one transaction.** `process_razorpay_event` records the event id, checks the amount and currency against our own price, and grants credits at most once per Razorpay payment id. If it fails, the webhook answers 500, nothing is kept and Razorpay retries. Subscription status follows the newest event (`last_event_at`), so events arriving out of order can't undo a newer state. Refunds take back the unspent share of the payment's credits (ledger `refund`).
+- **Paid access:** an active plan, or a plan cancelled/halted until the end of the paid period, or a pack bought in the last 30 days, removes the export watermark (`create_render_job` snapshots it).
+- **Personal data:** the customer's email, phone and card details in Razorpay's payloads are never stored or logged; Razorpay gets only our row id in `notes`.
 - **The checkout success callback in the browser is not trusted.** Access and credits change only when `razorpay-webhook` receives a signed event and verifies it with the webhook secret.
 - Events handled: subscription activated, charged, halted, cancelled; payment captured and failed; refund processed.
 - **De-duplication by event id:** each event's `x-razorpay-event-id` is inserted into `webhook_events` (unique). A repeat does nothing. This also covers subscription events, which have no payment id.

@@ -599,6 +599,7 @@ export type Database = {
           job_id: string | null;
           kind: string;
           note: string | null;
+          payment_id: string | null;
           workspace_id: string;
         };
         ComputedFields: never;
@@ -609,6 +610,7 @@ export type Database = {
           job_id?: string | null;
           kind: string;
           note?: string | null;
+          payment_id?: string | null;
           workspace_id: string;
         };
         Update: {
@@ -618,9 +620,17 @@ export type Database = {
           job_id?: string | null;
           kind?: string;
           note?: string | null;
+          payment_id?: string | null;
           workspace_id?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: 'credit_ledger_payment_id_fkey';
+            columns: ['payment_id'];
+            isOneToOne: false;
+            referencedRelation: 'payments';
+            referencedColumns: ['id'];
+          },
           {
             foreignKeyName: 'credit_ledger_workspace_id_fkey';
             columns: ['workspace_id'];
@@ -629,6 +639,37 @@ export type Database = {
             referencedColumns: ['id'];
           },
         ];
+      };
+      credit_packs: {
+        Row: {
+          access_days: number;
+          active: boolean;
+          credits: number;
+          description: string;
+          id: string;
+          name: string;
+          price_inr: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          access_days?: number;
+          active?: boolean;
+          credits: number;
+          description?: string;
+          id: string;
+          name: string;
+          price_inr: number;
+        };
+        Update: {
+          access_days?: number;
+          active?: boolean;
+          credits?: number;
+          description?: string;
+          id?: string;
+          name?: string;
+          price_inr?: number;
+        };
+        Relationships: [];
       };
       generation_jobs: {
         Row: {
@@ -717,6 +758,145 @@ export type Database = {
             referencedColumns: ['id'];
           },
         ];
+      };
+      payments: {
+        Row: {
+          amount: number;
+          created_at: string;
+          created_by: string | null;
+          credits: number;
+          credits_removed: number;
+          currency: string;
+          error: string | null;
+          id: string;
+          kind: string;
+          method: string | null;
+          pack_id: string | null;
+          paid_at: string | null;
+          plan_id: string | null;
+          razorpay_order_id: string | null;
+          razorpay_payment_id: string | null;
+          refunded_amount: number;
+          status: string;
+          subscription_id: string | null;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          amount: number;
+          created_at?: string;
+          created_by?: string | null;
+          credits?: number;
+          credits_removed?: number;
+          currency?: string;
+          error?: string | null;
+          id?: string;
+          kind: string;
+          method?: string | null;
+          pack_id?: string | null;
+          paid_at?: string | null;
+          plan_id?: string | null;
+          razorpay_order_id?: string | null;
+          razorpay_payment_id?: string | null;
+          refunded_amount?: number;
+          status?: string;
+          subscription_id?: string | null;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          amount?: number;
+          created_at?: string;
+          created_by?: string | null;
+          credits?: number;
+          credits_removed?: number;
+          currency?: string;
+          error?: string | null;
+          id?: string;
+          kind?: string;
+          method?: string | null;
+          pack_id?: string | null;
+          paid_at?: string | null;
+          plan_id?: string | null;
+          razorpay_order_id?: string | null;
+          razorpay_payment_id?: string | null;
+          refunded_amount?: number;
+          status?: string;
+          subscription_id?: string | null;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'payments_pack_id_fkey';
+            columns: ['pack_id'];
+            isOneToOne: false;
+            referencedRelation: 'credit_packs';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'payments_plan_id_fkey';
+            columns: ['plan_id'];
+            isOneToOne: false;
+            referencedRelation: 'plans';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'payments_subscription_id_fkey';
+            columns: ['subscription_id'];
+            isOneToOne: false;
+            referencedRelation: 'subscriptions';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'payments_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      plans: {
+        Row: {
+          active: boolean;
+          audience: string;
+          features: string[];
+          highlighted: boolean;
+          id: string;
+          monthly_credits: number;
+          name: string;
+          price_inr: number;
+          razorpay_plan_id: string | null;
+          sort: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          audience?: string;
+          features?: string[];
+          highlighted?: boolean;
+          id: string;
+          monthly_credits: number;
+          name: string;
+          price_inr: number;
+          razorpay_plan_id?: string | null;
+          sort?: number;
+        };
+        Update: {
+          active?: boolean;
+          audience?: string;
+          features?: string[];
+          highlighted?: boolean;
+          id?: string;
+          monthly_credits?: number;
+          name?: string;
+          price_inr?: number;
+          razorpay_plan_id?: string | null;
+          sort?: number;
+        };
+        Relationships: [];
       };
       platform_admins: {
         Row: {
@@ -952,6 +1132,64 @@ export type Database = {
         };
         Relationships: [];
       };
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean;
+          created_at: string;
+          created_by: string | null;
+          current_period_end: string | null;
+          id: string;
+          last_event_at: number;
+          plan_id: string;
+          razorpay_subscription_id: string | null;
+          status: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          cancel_at_period_end?: boolean;
+          created_at?: string;
+          created_by?: string | null;
+          current_period_end?: string | null;
+          id?: string;
+          last_event_at?: number;
+          plan_id: string;
+          razorpay_subscription_id?: string | null;
+          status?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          cancel_at_period_end?: boolean;
+          created_at?: string;
+          created_by?: string | null;
+          current_period_end?: string | null;
+          id?: string;
+          last_event_at?: number;
+          plan_id?: string;
+          razorpay_subscription_id?: string | null;
+          status?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'subscriptions_plan_id_fkey';
+            columns: ['plan_id'];
+            isOneToOne: false;
+            referencedRelation: 'plans';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'subscriptions_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       webhook_events: {
         Row: {
           event_id: string;
@@ -1047,6 +1285,44 @@ export type Database = {
         Args: { p_clip: string; p_duration: number; p_file_path: string; p_poster_path: string };
         Returns: boolean;
       };
+      billing_abandon: { Args: { p_ref: string }; Returns: undefined };
+      billing_attach: { Args: { p_razorpay_id: string; p_ref: string }; Returns: undefined };
+      billing_mark_cancel: { Args: { p_ref: string; p_user: string }; Returns: undefined };
+      billing_prepare_cancel: {
+        Args: { p_user: string };
+        Returns: {
+          razorpay_subscription_id: string;
+          ref: string;
+          subscription_status: string;
+        }[];
+      };
+      billing_prepare_order: {
+        Args: { p_pack: string; p_user: string };
+        Returns: {
+          amount: number;
+          currency: string;
+          ref: string;
+        }[];
+      };
+      billing_prepare_subscription: {
+        Args: { p_plan: string; p_user: string };
+        Returns: {
+          razorpay_plan_id: string;
+          ref: string;
+          workspace_id: string;
+        }[];
+      };
+      billing_status: {
+        Args: { p_workspace: string };
+        Returns: {
+          cancel_at_period_end: boolean;
+          current_period_end: string;
+          plan_id: string;
+          plan_name: string;
+          subscription_status: string;
+          watermark: boolean;
+        }[];
+      };
       choose_product_image: {
         Args: { p_product_id: string; p_use_enhanced: boolean };
         Returns: boolean;
@@ -1109,6 +1385,7 @@ export type Database = {
         Args: { p_clip: string; p_provider_job_id: string };
         Returns: boolean;
       };
+      process_razorpay_event: { Args: { p_event: Json; p_event_id: string }; Returns: string };
       reserve_ai_clip: {
         Args: {
           p_mode: string;

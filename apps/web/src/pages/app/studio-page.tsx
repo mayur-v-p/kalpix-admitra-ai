@@ -24,6 +24,7 @@ import {
   type Campaign,
   type CopyDrafts,
 } from '@/features/campaigns/api';
+import { useBillingStatus } from '@/features/billing/hooks';
 import { BriefForm } from '@/features/campaigns/brief-form';
 import { campaignKey, campaignsKey, useCampaign } from '@/features/campaigns/hooks';
 import { outlineStyleOptions, type OutlineStyleValue } from '@/features/campaigns/options';
@@ -59,6 +60,7 @@ export function StudioPage() {
   const workspace = useWorkspace();
   const campaign = useCampaign(id);
   const products = useProducts(workspace.data?.workspace.id);
+  const billing = useBillingStatus(workspace.data?.workspace.id);
   const product = useProduct(campaign.data?.product_id ?? undefined);
   // The image ads use: the AI-enhanced one if chosen, else the cutout, else the photo.
   const cutoutPath = adImagePath(product.data);
@@ -116,7 +118,8 @@ export function StudioPage() {
     productOutline: outline.data ?? null,
     logoUrl: logoUrl.data ?? null,
     aspect,
-    watermark: true, // free plan until billing (M7)
+    // Same rule as the export (create_render_job): paid plans and packs remove it.
+    watermark: billing.data?.watermark ?? true,
     qrUrl: qrUrlFor(qrCode.data),
     scene: sceneFor(
       clip.data,
