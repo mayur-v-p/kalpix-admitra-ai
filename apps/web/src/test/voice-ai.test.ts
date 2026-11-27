@@ -53,6 +53,7 @@ describe('AI brief check (understand-brief)', async () => {
       to: '2026-11-20',
       time: '5–9 PM',
       goal: 'festival',
+      purpose: 'offer',
       occasion: 'Diwali',
       businessType: 'retail',
     });
@@ -74,7 +75,13 @@ describe('AI brief check (understand-brief)', async () => {
       }),
       TODAY,
     );
-    expect(out).toEqual({ goal: 'sale', occasion: 'Diwali', businessType: 'retail', product: 'scriptx/script' });
+    expect(out).toEqual({
+      goal: 'sale',
+      purpose: 'promote',
+      occasion: 'Diwali',
+      businessType: 'retail',
+      product: 'scriptx/script',
+    });
   });
 
   it('treats a missing or broken answer as "nothing understood"', () => {

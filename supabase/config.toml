@@ -460,6 +460,9 @@ verify_jwt = true
 [functions.understand-brief]
 verify_jwt = true
 
+[functions.design-ad]
+verify_jwt = true
+
 # Public on purpose: phones scan the QR without logging in. Protected by random codes,
 # confirmed-facts-only targets (no open redirect) and a per-IP rate limit.
 [functions.qr-redirect]

@@ -1,12 +1,18 @@
 // Renders one export job: every chosen size as MP4 (video), GIF (WhatsApp/preview) and PNG
 // (poster), uploads them to the private renders bucket and records them in creative_assets.
 import {
+  adExtras,
   buildAdProps,
+  checkRecipe,
   FORMATS,
+  FPS,
   phase,
+  sectorOf,
   STYLES_ENGINE_VERSION,
   type Aspect,
   type FactSnapshot,
+  type Language,
+  type Purpose,
   type SceneStyle,
 } from '@admitra/styles-engine';
 import {
@@ -29,12 +35,27 @@ export type JobParams = FactSnapshot & {
   lowRes?: boolean;
   /** The approved AI scene (create_render_job refuses unapproved clips). */
   scene?: { style: SceneStyle; filePath: string | null } | null;
+  /** The chosen design recipe (AI-designed ads); checked again before drawing. */
+  design?: unknown;
+};
+
+/** Extra snapshot fields for AI-designed ads (M9). Hours etc. are null unless confirmed. */
+type ComposerSnapshot = {
+  campaign: { purpose?: string };
+  business: {
+    industry?: string;
+    specialities?: string[];
+    opening_hours?: string | null;
+    registration_no?: string | null;
+  };
 };
 
 export type RenderJob = {
   id: string;
   workspace_id: string;
   campaign_id: string | null;
+  /** 'outline_highlight' or 'composer'. */
+  template_id?: string;
   formats: Aspect[];
   params: JobParams;
 };
@@ -111,13 +132,43 @@ export async function renderJob(opts: {
       if (missing.length > 0) {
         throw new PermanentError(`Facts not confirmed: ${missing.join(', ')}`);
       }
-      // Leave the outline unset so the composition traces the product in Chromium.
-      const inputProps: Record<string, unknown> = { ...props };
-      delete inputProps.productOutline;
+      let inputProps: Record<string, unknown>;
+      let compositionId = COMPOSITION;
+      let posterFrame = POSTER_FRAME;
+      if (job.template_id === 'composer') {
+        // AI-designed ad: the saved recipe is checked again, with the same rules as the preview.
+        const s = p as unknown as ComposerSnapshot;
+        const recipe = checkRecipe(p.design, {
+          sector: sectorOf(s.business.industry),
+          purpose: (s.campaign.purpose ?? 'promote') as Purpose,
+          language: p.campaign.language as Language,
+          businessName: p.business.name,
+          productName: p.product?.name ?? null,
+          specialities: s.business.specialities ?? [],
+          hasPhoto: Boolean(productImageUrl),
+        });
+        // The database only puts confirmed hours/registration in the snapshot.
+        const extras = adExtras({
+          industry: s.business.industry ?? null,
+          opening_hours: s.business.opening_hours ?? null,
+          registration_no: s.business.registration_no ?? null,
+          details_confirmed: true,
+        });
+        if (sectorOf(s.business.industry) === 'real_estate' && !extras.registration) {
+          throw new PermanentError('Property ads need a confirmed RERA number.');
+        }
+        inputProps = { aspect, recipe, ad: props, extras };
+        compositionId = 'Composer';
+        posterFrame = recipe.duration * FPS - FPS; // one second before the end: everything is in
+      } else {
+        // Leave the outline unset so the composition traces the product in Chromium.
+        inputProps = { ...props };
+        delete inputProps.productOutline;
+      }
 
       const composition = await selectComposition({
         serveUrl,
-        id: COMPOSITION,
+        id: compositionId,
         inputProps,
         puppeteerInstance: browser,
         logLevel: 'error',
@@ -181,7 +232,7 @@ export async function renderJob(opts: {
         inputProps,
         puppeteerInstance: browser,
         cancelSignal,
-        frame: POSTER_FRAME,
+        frame: posterFrame,
         scale,
         imageFormat: 'png',
         output: png,

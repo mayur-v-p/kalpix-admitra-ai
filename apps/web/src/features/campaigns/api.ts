@@ -64,6 +64,9 @@ type Editable = Pick<
   | 'caption'
   | 'hashtags'
   | 'scene_clip_id'
+  | 'purpose'
+  | 'style_id'
+  | 'design'
 >;
 
 export async function updateCampaign(id: string, values: Editable): Promise<Campaign> {

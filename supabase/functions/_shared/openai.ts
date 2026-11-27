@@ -22,6 +22,8 @@ export type JsonCall = {
   timeoutMs?: number;
   /** Used only by non-reasoning models (reasoning models ignore temperature). */
   temperature?: number;
+  /** Answer size limit (reasoning models count their thinking in it too). */
+  maxTokens?: number;
 };
 
 export async function openaiJson<T>(call: JsonCall): Promise<T> {
@@ -46,8 +48,8 @@ export async function openaiJson<T>(call: JsonCall): Promise<T> {
         json_schema: { name: call.name, strict: true, schema: call.schema },
       },
       ...(reasoning
-        ? { reasoning_effort: 'low', max_completion_tokens: 3000 }
-        : { temperature: call.temperature ?? 0.2, max_completion_tokens: 1200 }),
+        ? { reasoning_effort: 'low', max_completion_tokens: call.maxTokens ?? 3000 }
+        : { temperature: call.temperature ?? 0.2, max_completion_tokens: call.maxTokens ?? 1200 }),
     }),
   });
   // Never log the response body: it can echo what the owner said.

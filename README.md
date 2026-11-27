@@ -49,6 +49,7 @@ them). **No secret key is needed** to start the app or try the main flow.
 |---|---|
 | Speak your ad, understanding the request, spoken read-back | Works: the browser's speech tools + Kalpix's own parser for Hindi/Marathi/Hinglish numbers, dates and offers |
 | **AI understanding** of free-style requests (OpenAI, `OPENAI_API_KEY` on the server) | Kalpix's own parser answers instead. With the key, the AI's reading is shown on the same "Check your ad" screen, labelled "Understood by AI", and still has to be checked and confirmed |
+| **AI art director**: 3 different animated ad designs per tap ("Pick a look": layout, motion, colours, fonts, words) for any sector (café, clinic, gym, real estate, ...) and purpose (promote, menu, opening, festival, offer) (same key) | A rule-based "surprise" designer makes 3 different looks from the same kit. Facts on the ad always come from confirmed fields; health ads cannot carry claims; property ads must show a confirmed RERA number |
 | **AI ad text** in Hindi/Marathi/English (same key) | Ready-made sample lines, labelled "Test mode". The AI never writes prices, discounts, numbers or dates; the server drops any line that does |
 | Animated ad preview in the Studio | Works: rendered live in the browser |
 | Background removal, AI video scenes | Run in **test mode** (clearly labelled sample results) |

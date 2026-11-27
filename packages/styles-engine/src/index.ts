@@ -48,7 +48,19 @@ export {
 } from './outline/trace';
 export { TRACE_SIZE, traceImageUrl } from './outline/trace-url';
 
+// Ad Composer: draws any AI-designed (or surprise) recipe.
+export {
+  Composer,
+  composerDurationFrames,
+  type ComposerExtras,
+  type ComposerProps,
+} from './composer/Composer';
+export * from './composer/recipe';
+export { enterStyle, TIMING } from './composer/effects';
+export { FONTS, isDevanagari, type FontSpec } from './composer/fonts';
+
 export const STYLES = [
+  { id: 'composer', name: 'AI Designed', available: true },
   { id: 'outline_highlight', name: 'Outline Highlight', available: true },
   { id: 'mascot', name: 'Mascot Presenter', available: false },
   { id: 'ai_scene', name: 'AI Scene', available: false }, // standalone AI Scene ad; scenes behind Outline Highlight work now (M6)

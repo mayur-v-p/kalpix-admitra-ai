@@ -10,6 +10,7 @@ export const GOALS = ['sale', 'new_product', 'festival', 'event', 'booking', 'vi
 export const CTAS = ['whatsapp', 'call', 'visit', 'book', 'order'] as const;
 export const LANGUAGES = ['en', 'hi', 'mr', 'hinglish'] as const;
 export const BUSINESS_TYPES = ['food', 'retail', 'beauty'] as const;
+export const PURPOSES = ['promote', 'menu', 'new_arrivals', 'festival', 'opening', 'offer'] as const;
 
 /** What the model answers (every key present; null when not said). */
 export type RawBrief = {
@@ -21,6 +22,7 @@ export type RawBrief = {
   start_hour: number | null;
   end_hour: number | null;
   goal: string;
+  purpose: string;
   occasion: string | null;
   cta: string | null;
   language: string | null;
@@ -36,6 +38,7 @@ export type CheckedBrief = {
   to?: string;
   time?: string;
   goal?: (typeof GOALS)[number];
+  purpose?: (typeof PURPOSES)[number];
   occasion?: string;
   cta?: (typeof CTAS)[number];
   language?: (typeof LANGUAGES)[number];
@@ -59,6 +62,7 @@ export const BRIEF_SCHEMA = {
     'start_hour',
     'end_hour',
     'goal',
+    'purpose',
     'occasion',
     'cta',
     'language',
@@ -73,6 +77,7 @@ export const BRIEF_SCHEMA = {
     start_hour: nullable('integer', { description: '0-23, or null' }),
     end_hour: nullable('integer', { description: '0-23, or null' }),
     goal: { type: 'string', enum: [...GOALS] },
+    purpose: { type: 'string', enum: [...PURPOSES] },
     occasion: nullable('string', { description: 'Festival or occasion name in English, or null' }),
     cta: { anyOf: [{ type: 'string', enum: [...CTAS] }, { type: 'null' }] },
     language: { anyOf: [{ type: 'string', enum: [...LANGUAGES] }, { type: 'null' }] },
@@ -102,6 +107,9 @@ export function briefInstructions(today: string, products: string[]): string {
     '  Chaturthi, Christmas, Pongal, Onam, ...); otherwise sale for discounts or offers,',
     '  new_product for something new, event, booking for appointments, visit to invite',
     '  people to the shop. Default sale.',
+    '- purpose: what the ad is for. opening for a grand opening, menu for showing the menu,',
+    '  festival for festival greetings, offer when there is a discount or sale, new_arrivals',
+    '  for new stock or a new collection, otherwise promote (promote the business itself).',
     '- occasion: the festival or occasion name in English ("Diwali"), or null.',
     '- product: short name in English Title Case ("Saree", "Masala Chai").',
     products.length
@@ -179,6 +187,7 @@ export function checkBrief(raw: unknown, today: string): CheckedBrief {
   if (a !== undefined && b !== undefined && a < b) out.time = timeText(a, b);
 
   out.goal = oneOf(GOALS, r.goal) ?? 'sale';
+  out.purpose = oneOf(PURPOSES, r.purpose) ?? (out.discount ? 'offer' : 'promote');
   const occasion = shortText(r.occasion, 30);
   if (occasion && !/\d/.test(occasion)) out.occasion = occasion;
   const cta = oneOf(CTAS, r.cta);

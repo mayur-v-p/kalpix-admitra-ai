@@ -341,13 +341,19 @@ export type Database = {
         Row: {
           created_at: string;
           description: string | null;
+          details_confirmed_at: string | null;
+          details_confirmed_by: string | null;
           id: string;
           industry: string;
           languages: string[];
           name: string;
+          opening_hours: string | null;
           phone: string | null;
           phone_confirmed_at: string | null;
           phone_confirmed_by: string | null;
+          registration_no: string | null;
+          since_year: number | null;
+          specialities: string[];
           updated_at: string;
           website: string | null;
           workspace_id: string;
@@ -356,13 +362,19 @@ export type Database = {
         Insert: {
           created_at?: string;
           description?: string | null;
+          details_confirmed_at?: string | null;
+          details_confirmed_by?: string | null;
           id?: string;
           industry: string;
           languages?: string[];
           name: string;
+          opening_hours?: string | null;
           phone?: string | null;
           phone_confirmed_at?: string | null;
           phone_confirmed_by?: string | null;
+          registration_no?: string | null;
+          since_year?: number | null;
+          specialities?: string[];
           updated_at?: string;
           website?: string | null;
           workspace_id: string;
@@ -370,13 +382,19 @@ export type Database = {
         Update: {
           created_at?: string;
           description?: string | null;
+          details_confirmed_at?: string | null;
+          details_confirmed_by?: string | null;
           id?: string;
           industry?: string;
           languages?: string[];
           name?: string;
+          opening_hours?: string | null;
           phone?: string | null;
           phone_confirmed_at?: string | null;
           phone_confirmed_by?: string | null;
+          registration_no?: string | null;
+          since_year?: number | null;
+          specialities?: string[];
           updated_at?: string;
           website?: string | null;
           workspace_id?: string;
@@ -397,6 +415,7 @@ export type Database = {
           caption: string | null;
           created_at: string;
           cta: string;
+          design: Json | null;
           end_date: string | null;
           facts_confirmed_at: string | null;
           facts_confirmed_by: string | null;
@@ -409,6 +428,7 @@ export type Database = {
           offer_text: string | null;
           outline_style: string;
           product_id: string | null;
+          purpose: string;
           scene_clip_id: string | null;
           start_date: string | null;
           status: string;
@@ -422,6 +442,7 @@ export type Database = {
           caption?: string | null;
           created_at?: string;
           cta?: string;
+          design?: Json | null;
           end_date?: string | null;
           facts_confirmed_at?: string | null;
           facts_confirmed_by?: string | null;
@@ -434,6 +455,7 @@ export type Database = {
           offer_text?: string | null;
           outline_style?: string;
           product_id?: string | null;
+          purpose?: string;
           scene_clip_id?: string | null;
           start_date?: string | null;
           status?: string;
@@ -446,6 +468,7 @@ export type Database = {
           caption?: string | null;
           created_at?: string;
           cta?: string;
+          design?: Json | null;
           end_date?: string | null;
           facts_confirmed_at?: string | null;
           facts_confirmed_by?: string | null;
@@ -458,6 +481,7 @@ export type Database = {
           offer_text?: string | null;
           outline_style?: string;
           product_id?: string | null;
+          purpose?: string;
           scene_clip_id?: string | null;
           start_date?: string | null;
           status?: string;
@@ -1424,6 +1448,7 @@ export type Database = {
         Args: { p_job: string; p_template_version: string; p_worker: string };
         Returns: boolean;
       };
+      confirm_business_details: { Args: { p_business_id: string }; Returns: string };
       confirm_business_phone: { Args: { p_business_id: string }; Returns: string };
       confirm_campaign_facts: { Args: { p_campaign_id: string }; Returns: string };
       confirm_location: { Args: { p_location_id: string }; Returns: string };

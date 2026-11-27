@@ -2,11 +2,19 @@ import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database';
 import { confirmCampaignFacts } from '@/features/campaigns/api';
 import { confirmProductPrice, requestCutout, uploadProductPhoto } from '@/features/products/api';
-import { campaignName, offerText, type AdCta, type AdGoal, type AdLanguage } from './parse';
+import {
+  campaignName,
+  offerText,
+  type AdCta,
+  type AdGoal,
+  type AdLanguage,
+  type AdPurpose,
+} from './parse';
 
 /** What the owner checked on the "Check your ad" screen. */
 export type CheckedAd = {
   goal: AdGoal;
+  purpose?: AdPurpose;
   occasion?: string;
   product?: string;
   productId?: string;
@@ -118,6 +126,7 @@ export async function createAdFromVoice(
         end_date: a.to ?? a.from ?? null,
         cta: a.cta,
         language: a.language,
+        purpose: a.purpose ?? 'promote',
       })
       .select('id')
       .single(),

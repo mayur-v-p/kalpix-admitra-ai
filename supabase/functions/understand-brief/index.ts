@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
       schema: BRIEF_SCHEMA,
       system: briefInstructions(today, names),
       user: `The owner said: ${JSON.stringify(text.trim())}`,
-      timeoutMs: 10000,
+      timeoutMs: 15000,
     });
     return json(req, { brief: checkBrief(raw, today), provider: 'openai' });
   } catch (error) {

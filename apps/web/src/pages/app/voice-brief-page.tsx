@@ -121,6 +121,7 @@ export function VoiceBriefPage() {
     const found = products.data.find((p) => p.id === b.productId);
     return {
       goal: b.goal ?? 'sale',
+      purpose: b.purpose ?? (b.discount ? 'offer' : 'promote'),
       occasion: b.occasion,
       product: b.product,
       productId: b.productId,

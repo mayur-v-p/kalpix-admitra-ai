@@ -1,12 +1,18 @@
 import {
   ASPECTS,
+  checkRecipe,
+  Composer,
   FORMATS,
   FPS,
   OUTLINE_HIGHLIGHT_DURATION_FRAMES,
   OutlineHighlight,
   STYLES,
   type Aspect,
+  type Purpose,
 } from '@admitra/styles-engine';
+import { composerExtras, recipeContext } from '@/features/design/api';
+import { BusinessDetailsCard } from '@/features/design/business-details';
+import { LookPicker } from '@/features/design/look-picker';
 import { Player } from '@remotion/player';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Download, Sparkles } from 'lucide-react';
@@ -128,6 +134,21 @@ export function StudioPage() {
       sceneVideo.data,
     ),
   });
+  // AI-designed look (Composer): the saved recipe is checked again every time it is drawn.
+  const ctx = recipeContext(c, business, product.data?.name ?? null, Boolean(productUrl.data));
+  const recipe = c.design ? checkRecipe(c.design, ctx) : null;
+  const useComposer = c.style_id === 'composer' && recipe !== null;
+  const extras = composerExtras(business);
+  const detailsNotice =
+    useComposer &&
+    !business.details_confirmed_at &&
+    (business.opening_hours || business.since_year || business.registration_no)
+      ? 'Confirm your hours and registration number in "Business details for ads" to show them.'
+      : useComposer && ctx.sector === 'real_estate' && !extras.registration
+        ? 'Property ads must show the RERA number: add and confirm it in "Business details for ads".'
+        : null;
+  const refreshWorkspace = () => queryClient.invalidateQueries({ queryKey: ['workspace'] });
+
   const sceneNotice =
     c.scene_clip_id && clip.data && clip.data.status !== 'COMPLETED'
       ? 'Approve the AI scene first (or choose "No scene"), then export.'
@@ -182,22 +203,44 @@ export function StudioPage() {
                   aspect === '9:16' ? 380 : aspect === '4:5' ? 460 : aspect === '1:1' ? 520 : 900,
               }}
             >
-              <Player
-                key={aspect}
-                component={OutlineHighlight}
-                inputProps={props}
-                durationInFrames={OUTLINE_HIGHLIGHT_DURATION_FRAMES}
-                fps={FPS}
-                compositionWidth={width}
-                compositionHeight={height}
-                style={{ width: '100%', aspectRatio: `${width} / ${height}` }}
-                controls
-                loop
-                autoPlay
-                acknowledgeRemotionLicense
-              />
+              {useComposer ? (
+                <Player
+                  key={`composer-${aspect}`}
+                  component={Composer}
+                  inputProps={{ aspect, recipe, ad: props, extras }}
+                  durationInFrames={recipe.duration * FPS}
+                  fps={FPS}
+                  compositionWidth={width}
+                  compositionHeight={height}
+                  style={{ width: '100%', aspectRatio: `${width} / ${height}` }}
+                  controls
+                  loop
+                  autoPlay
+                  acknowledgeRemotionLicense
+                />
+              ) : (
+                <Player
+                  key={aspect}
+                  component={OutlineHighlight}
+                  inputProps={props}
+                  durationInFrames={OUTLINE_HIGHLIGHT_DURATION_FRAMES}
+                  fps={FPS}
+                  compositionWidth={width}
+                  compositionHeight={height}
+                  style={{ width: '100%', aspectRatio: `${width} / ${height}` }}
+                  controls
+                  loop
+                  autoPlay
+                  acknowledgeRemotionLicense
+                />
+              )}
             </div>
           </div>
+          {detailsNotice && (
+            <div className="mt-3">
+              <FormMessage tone="info">{detailsNotice}</FormMessage>
+            </div>
+          )}
           {missing.length > 0 && (
             <div className="mt-3 rounded-xl border border-lamp-deep/40 bg-lamp-soft p-4">
               <p className="font-medium">Not shown on the ad until confirmed:</p>
@@ -228,23 +271,33 @@ export function StudioPage() {
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
             <fieldset>
               <legend className="font-medium">Style</legend>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {STYLES.map((s) => (
-                  <span
-                    key={s.id}
-                    className={cn(
-                      'inline-flex min-h-11 items-center rounded-full border px-4',
-                      s.id === c.style_id ? 'border-ink bg-lamp-soft' : 'border-line text-muted',
-                    )}
-                    aria-disabled={!s.available}
-                  >
-                    {s.name}
-                    {!s.available && <span className="ml-2 text-xs">soon</span>}
-                  </span>
-                ))}
+              <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Style">
+                {STYLES.filter((s) => s.available).map((s) => {
+                  const active = s.id === 'composer' ? useComposer : !useComposer;
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => {
+                        if (s.id === 'composer') {
+                          if (recipe) void save({ style_id: 'composer' });
+                          else document.getElementById('looks-title')?.scrollIntoView({ behavior: 'smooth' });
+                        } else void save({ style_id: 'outline_highlight' });
+                      }}
+                      className={cn(
+                        'inline-flex min-h-11 items-center rounded-full border px-4',
+                        active ? 'border-ink bg-ink text-paper' : 'border-line bg-card hover:border-ink/50',
+                      )}
+                    >
+                      {s.name}
+                    </button>
+                  );
+                })}
               </div>
             </fieldset>
-            <fieldset>
+            <fieldset hidden={useComposer}>
               <legend className="font-medium">Outline</legend>
               <div
                 className="mt-2 flex flex-wrap gap-2"
@@ -271,6 +324,17 @@ export function StudioPage() {
               </div>
             </fieldset>
           </div>
+
+          <LookPicker
+            campaignId={c.id}
+            purpose={c.purpose as Purpose}
+            ctx={ctx}
+            ad={props}
+            extras={extras}
+            current={useComposer ? recipe : null}
+            onPurpose={(p) => save({ purpose: p })}
+            onUse={(r) => save({ style_id: 'composer', design: r })}
+          />
         </section>
 
         {/* Controls */}
@@ -301,6 +365,7 @@ export function StudioPage() {
             testMode={!clip.data || clip.data.provider === 'mock'}
             onSelect={(clipId) => save({ scene_clip_id: clipId })}
           />
+          <BusinessDetailsCard key={business.id} business={business} onSaved={refreshWorkspace} />
           <section id="facts" className="rounded-2xl border border-line bg-card p-5 shadow-soft">
             <h2 className="font-sans text-lg font-medium tracking-normal normal-case">
               Offer and dates

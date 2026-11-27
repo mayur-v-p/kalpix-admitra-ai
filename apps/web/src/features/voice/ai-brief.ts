@@ -5,11 +5,11 @@ import { detectProduct, type VoiceBrief } from './parse';
 /**
  * AI understanding of "Speak your ad" (Edge Function understand-brief, OpenAI on the server).
  *
- * Optional by design: with no key on the server, an error, or no answer within 12 seconds,
+ * Optional by design: with no key on the server, an error, or no answer within 20 seconds,
  * this gives null and the screen keeps what Kalpix's own parser understood. Either way the
  * owner checks, edits and confirms every value before it can appear on an ad.
  */
-const TIMEOUT_MS = 12000;
+const TIMEOUT_MS = 20000;
 
 export async function understandBrief(
   text: string,

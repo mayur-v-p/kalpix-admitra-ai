@@ -22,6 +22,8 @@ export type VoiceBrief = {
   time?: string; // "5–9 PM"
   goal?: AdGoal;
   occasion?: string; // "Diwali"
+  /** What the ad is for (Studio "What is this ad for?"). */
+  purpose?: AdPurpose;
   cta?: AdCta;
   language?: AdLanguage;
   businessType?: 'food' | 'retail' | 'beauty';
@@ -400,6 +402,21 @@ export function detectGoal(w: string[]): AdGoal {
   return 'sale';
 }
 
+export type AdPurpose = 'promote' | 'menu' | 'new_arrivals' | 'festival' | 'opening' | 'offer';
+
+/** What the ad is for: promote the business (default), menu, new arrivals, festival, opening, offer. */
+export function detectPurpose(w: string[], hasDiscount: boolean): AdPurpose {
+  if (has(w, 'opening', 'inauguration', 'udghatan', 'उद्घाटन', 'शुभारंभ', 'shubharambh', 'grand'))
+    return 'opening';
+  if (has(w, 'menu', 'मेन्यू', 'मेनू', 'specials', 'special')) return 'menu';
+  if (has(w, 'greeting', 'greetings', 'wishes', 'shubhkamna', 'shubhkamnayein', 'शुभकामनाएँ', 'शुभकामना', 'शुभेच्छा', 'badhai', 'बधाई'))
+    return 'festival';
+  if (hasDiscount || has(w, 'sale', 'offer', 'discount', 'सेल', 'ऑफर', 'छूट', 'सवलत')) return 'offer';
+  if (has(w, 'arrival', 'arrivals', 'collection', 'launch', 'कलेक्शन')) return 'new_arrivals';
+  if (Object.keys(OCCASIONS).some((o) => w.includes(o))) return 'festival';
+  return 'promote';
+}
+
 export function detectCta(w: string[]): AdCta | undefined {
   if (has(w, 'whatsapp', 'व्हाट्सएप', 'व्हॉट्सअॅप', 'whats')) return 'whatsapp';
   if (has(w, 'call', 'कॉल', 'phone')) return 'call';
@@ -620,6 +637,7 @@ export function parseBrief(
 
   Object.assign(brief, detectProduct(text, library));
   brief.goal = detectGoal(w);
+  brief.purpose = detectPurpose(w, brief.discount !== undefined);
   const occ = w.find((x) => OCCASIONS[x]);
   if (occ) brief.occasion = OCCASIONS[occ];
   brief.cta = detectCta(w);
