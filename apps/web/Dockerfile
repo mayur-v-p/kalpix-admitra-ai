@@ -20,6 +20,8 @@ RUN npm ci --no-audit --no-fund
 
 COPY packages packages
 COPY apps/web apps/web
+# Shared request/response code the website imports (no secrets: .env files are dockerignored).
+COPY supabase/functions supabase/functions
 
 ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_PUBLISHABLE_KEY
