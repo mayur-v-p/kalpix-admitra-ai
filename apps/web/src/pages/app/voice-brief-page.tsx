@@ -7,13 +7,14 @@ import {
 } from '@admitra/styles-engine';
 import { Player } from '@remotion/player';
 import { useQueryClient } from '@tanstack/react-query';
-import { ImagePlus, Pencil } from 'lucide-react';
+import { ImagePlus, Pencil, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FormMessage } from '@/components/ui/form-field';
 import { campaignsKey } from '@/features/campaigns/hooks';
 import { adImagePath } from '@/features/products/ad-image';
 import { productsKey, useProducts } from '@/features/products/hooks';
+import { mergeBriefs, useAiBrief } from '@/features/voice/ai-brief';
 import { adOffer, createAdFromVoice, type CheckedAd } from '@/features/voice/create-ad';
 import {
   inr,
@@ -108,13 +109,15 @@ export function VoiceBriefPage() {
     setEditing(null);
   }
 
+  // AI reading (optional, on the server): its values replace the parser's when they arrive.
+  const productNames = useMemo(() => products.data?.map((p) => p.name), [products.data]);
+  const ai = useAiBrief(transcript, productNames);
+
   // What was said, understood once the product library is known (to match product names).
   const parsed = useMemo<Values | null>(() => {
     if (!products.data || !ws.data) return null;
-    const b = parseBrief(
-      transcript,
-      products.data.map((p) => ({ id: p.id, name: p.name })),
-    );
+    const library = products.data.map((p) => ({ id: p.id, name: p.name }));
+    const b = mergeBriefs(parseBrief(transcript, library), ai.data ?? null, library);
     const found = products.data.find((p) => p.id === b.productId);
     return {
       goal: b.goal ?? 'sale',
@@ -130,7 +133,7 @@ export function VoiceBriefPage() {
       language: b.language ?? (lang === 'en' ? 'en' : lang),
       businessType: ws.data.business ? undefined : (b.businessType ?? 'other'),
     };
-  }, [transcript, products.data, ws.data, lang]);
+  }, [transcript, products.data, ws.data, lang, ai.data]);
   // The owner's edits win over what was understood, for this sentence only.
   const v = edits && edits.for === transcript ? edits.values : parsed;
 
@@ -474,7 +477,18 @@ export function VoiceBriefPage() {
             </span>
           </h1>
           {transcript ? (
-            <p className="mt-2 max-w-2xl text-muted">You said: “{transcript}”</p>
+            <>
+              <p className="mt-2 max-w-2xl text-muted">You said: “{transcript}”</p>
+              {ai.isFetching ? (
+                <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-soft px-3 py-1 text-sm text-indigo-deep" role="status">
+                  <Sparkles className="h-3.5 w-3.5 animate-pulse" aria-hidden="true" /> AI is reading what you said…
+                </p>
+              ) : ai.data ? (
+                <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-soft px-3 py-1 text-sm text-indigo-deep">
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> Understood by AI. Please check every line.
+                </p>
+              ) : null}
+            </>
           ) : (
             <p className="mt-2 max-w-2xl text-muted">
               Tap “Speak your ad” and say what you want, or fill the lines below.

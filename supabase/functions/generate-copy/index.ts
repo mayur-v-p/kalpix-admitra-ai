@@ -3,7 +3,12 @@
 // RLS, rate-limit per workspace with the service role. It returns drafts only; the owner
 // picks and edits one, and the browser saves it (AI output is always a draft).
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { getCopywriter, guardCopy, type CopyInput } from '../_shared/copywriter.ts';
+import {
+  fallbackCopywriter,
+  getCopywriter,
+  guardCopy,
+  type CopyInput,
+} from '../_shared/copywriter.ts';
 import { json, preflight } from '../_shared/cors.ts';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -96,8 +101,18 @@ Deno.serve(async (req) => {
 
   try {
     const writer = getCopywriter();
-    const drafts = guardCopy(await writer.write(input), input);
-    return json(req, { ...drafts, provider: writer.name });
+    try {
+      const drafts = guardCopy(await writer.write(input), input);
+      // An AI answer with nothing usable left after the guard falls back like an error.
+      if (drafts.headlines.length === 0) throw new Error('no_usable_drafts');
+      return json(req, { ...drafts, provider: writer.name });
+    } catch (error) {
+      if (writer === fallbackCopywriter) throw error;
+      // AI down, slow or unusable: the owner still gets ready-made drafts.
+      console.error('generate-copy: AI failed', error instanceof Error ? error.message : 'unknown');
+      const drafts = guardCopy(await fallbackCopywriter.write(input), input);
+      return json(req, { ...drafts, provider: fallbackCopywriter.name });
+    }
   } catch (error) {
     console.error('generate-copy: failed', error instanceof Error ? error.message : 'unknown');
     return json(req, { error: 'generation_failed' }, 502);

@@ -48,8 +48,10 @@ them). **No secret key is needed** to start the app or try the main flow.
 | Feature | Without a key |
 |---|---|
 | Speak your ad, understanding the request, spoken read-back | Works: the browser's speech tools + Kalpix's own parser for Hindi/Marathi/Hinglish numbers, dates and offers |
+| **AI understanding** of free-style requests (OpenAI, `OPENAI_API_KEY` on the server) | Kalpix's own parser answers instead. With the key, the AI's reading is shown on the same "Check your ad" screen, labelled "Understood by AI", and still has to be checked and confirmed |
+| **AI ad text** in Hindi/Marathi/English (same key) | Ready-made sample lines, labelled "Test mode". The AI never writes prices, discounts, numbers or dates; the server drops any line that does |
 | Animated ad preview in the Studio | Works: rendered live in the browser |
-| AI ad copy, background removal, AI video scenes | Run in **test mode** (clearly labelled sample results) |
+| Background removal, AI video scenes | Run in **test mode** (clearly labelled sample results) |
 | Video/GIF/poster file export | Needs the render worker (`apps/media-worker`), which uses a server key; not part of the one-command start |
 | Payments (Razorpay) | Shows "Payments are not switched on yet" |
 

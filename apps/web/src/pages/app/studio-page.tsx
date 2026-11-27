@@ -354,6 +354,7 @@ export function StudioPage() {
             <p className="mt-1 text-sm text-muted">
               Drafts never include prices or offers; those come only from your confirmed details.
               {drafts?.provider === 'mock' ? ' Test mode: sample lines.' : ''}
+              {drafts?.provider === 'openai' ? ' Written by AI: read it before you use it.' : ''}
             </p>
             {copyError && (
               <div className="mt-3">

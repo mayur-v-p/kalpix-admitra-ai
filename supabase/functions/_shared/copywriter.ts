@@ -1,6 +1,8 @@
+import { openaiConfigured, openaiJson } from './openai.ts';
+
 // Ad-copy providers behind one interface (architecture.md 5.1). Choose with COPY_PROVIDER.
-//   mock (default): ready-made lines per goal and language. No account needed.
-// A real LLM provider plugs in here later: implement Copywriter and add it to `providers`.
+//   openai: writes drafts with OpenAI (needs OPENAI_API_KEY; the default when that key is set).
+//   mock:   ready-made lines per goal and language. No account needed (default without a key).
 //
 // PRD rule: AI never invents or rewrites facts. The input deliberately has NO price, offer,
 // dates, phone or address, and guardCopy() drops any suggestion that contains numbers,
@@ -95,10 +97,73 @@ const mock: Copywriter = {
   },
 };
 
-const providers: Record<string, Copywriter> = { mock };
+const LANGUAGE_NAMES: Record<CopyInput['language'], string> = {
+  en: 'English',
+  hi: 'Hindi in Devanagari script',
+  mr: 'Marathi in Devanagari script',
+  hinglish: 'Hinglish (Hindi in Latin letters, mixed with English)',
+};
+
+const COPY_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['headlines', 'captions', 'hashtags'],
+  properties: {
+    headlines: { type: 'array', items: { type: 'string' } },
+    captions: { type: 'array', items: { type: 'string' } },
+    hashtags: { type: 'array', items: { type: 'string' } },
+  },
+};
+
+export function copyInstructions(input: CopyInput): string {
+  return [
+    'You write short ad text for an Indian small shop, for WhatsApp Status, Instagram Reels',
+    'and posters.',
+    `Write everything in ${LANGUAGE_NAMES[input.language]}.`,
+    `Tone: ${input.tone}. Warm, local and simple, like the shop owner talking to customers.`,
+    '',
+    'Write:',
+    '- 3 headlines, each at most 40 characters, no full stop at the end.',
+    '- 2 captions, each 1 to 2 short sentences, inviting people to visit or message.',
+    '- 5 hashtags, starting with #, letters and digits only, no spaces.',
+    '',
+    'Strict rules:',
+    '- Do NOT write any price, discount, percentage, number, date, time, phone number or',
+    '  address. The shop adds those itself from confirmed details. Words like "sale",',
+    '  "offer" and "special" are fine.',
+    '- Do not promise anything the shop did not say (no "free", "best in city", "guaranteed").',
+    '- Use only the facts below.',
+  ].join('\n');
+}
+
+const openai: Copywriter = {
+  name: 'openai',
+  async write(input) {
+    const facts = {
+      shop: input.businessName,
+      product: input.productName,
+      product_description: input.productDescription,
+      business_type: input.industry,
+      ad_goal: input.goal,
+    };
+    return await openaiJson<CopySuggestions>({
+      name: 'ad_copy',
+      schema: COPY_SCHEMA,
+      system: copyInstructions(input),
+      user: JSON.stringify(facts),
+      timeoutMs: 15000,
+      temperature: 0.8,
+    });
+  },
+};
+
+const providers: Record<string, Copywriter> = { mock, openai };
+
+/** Ready-made drafts, used when the AI provider fails. */
+export const fallbackCopywriter: Copywriter = mock;
 
 export function getCopywriter(): Copywriter {
-  const name = Deno.env.get('COPY_PROVIDER') ?? 'mock';
+  const name = Deno.env.get('COPY_PROVIDER') || (openaiConfigured() ? 'openai' : 'mock');
   const provider = providers[name];
   if (!provider) throw new Error(`Unknown COPY_PROVIDER "${name}"`);
   return provider;
