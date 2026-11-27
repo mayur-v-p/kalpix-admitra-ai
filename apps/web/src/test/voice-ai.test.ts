@@ -87,7 +87,9 @@ describe('AI brief check (understand-brief)', async () => {
   it('treats a missing or broken answer as "nothing understood"', () => {
     expect(checkBrief(null, TODAY)).toEqual({});
     expect(checkBrief('oops', TODAY)).toEqual({});
-    expect(checkBrief(answer({ price: null, discount_percent: null }), TODAY)).not.toHaveProperty('price');
+    expect(checkBrief(answer({ price: null, discount_percent: null }), TODAY)).not.toHaveProperty(
+      'price',
+    );
   });
 
   it('puts reversed dates in order and ignores dates far in the past', () => {

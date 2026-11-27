@@ -5,13 +5,13 @@ import { Logo } from './logo';
 
 export function SiteFooter() {
   return (
-    <footer className="bg-ink text-paper">
+    <footer className="bg-navy text-paper">
       <Container className="grid gap-10 py-12 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
         <div className="max-w-sm">
           <Logo tone="light" />
           <p className="mt-4 text-base text-paper/70">
-            Signature animated ads, posters and copy for every business, from one saved business
-            profile. Made in India.
+            Speak your ad in Hindi, Marathi or English. Kalpix designs the video, poster and GIF.
+            Made in India for India's shops.
           </p>
         </div>
         <FooterColumn title="Product" links={footerNav.product} />

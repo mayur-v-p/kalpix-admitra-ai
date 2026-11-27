@@ -7,10 +7,11 @@ import { Container } from '@/components/ui/container';
 import { cn } from '@/lib/utils';
 import { Logo } from './logo';
 
+// Blue underline grows on hover and stays on the current page (aria-current, see index.css).
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'inline-flex min-h-11 items-center px-1 text-base transition-colors hover:text-ink',
-    isActive ? 'text-ink underline decoration-lamp decoration-2 underline-offset-8' : 'text-muted',
+    'kx-navlink inline-flex min-h-11 items-center px-1 text-[15px] font-medium transition-colors',
+    isActive ? 'text-blue' : 'text-ink hover:text-ink',
   );
 
 /**
@@ -47,11 +48,8 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header
-      ref={headerRef}
-      className="sticky top-0 z-40 border-b border-line/70 bg-paper/90 backdrop-blur"
-    >
-      <Container className="flex h-16 items-center justify-between gap-4">
+    <header ref={headerRef} className="sticky top-0 z-40 bg-white/90 backdrop-blur">
+      <Container className="flex h-[76px] items-center justify-between gap-4">
         <Logo />
 
         <nav aria-label="Main" className="hidden items-center gap-8 md:flex">

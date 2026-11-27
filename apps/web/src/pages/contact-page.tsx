@@ -25,12 +25,15 @@ export function ContactPage() {
           intro="Questions about your account, billing, refunds or a custom plan for your agency or franchise? We usually reply within one working day."
         />
         <ul className="mt-10 grid gap-4 md:grid-cols-3">
-          {items.map(({ Icon, label, value, href }) => (
-            <li key={label} className="rounded-2xl border border-line bg-card p-6 shadow-soft">
-              <Icon className="h-6 w-6 text-indigo-deep" aria-hidden="true" />
-              <p className="mt-4 text-sm font-medium tracking-[0.2em] text-muted uppercase">
-                {label}
-              </p>
+          {items.map(({ Icon, label, value, href }, i) => (
+            <li
+              key={label}
+              className={`kx-lift rounded-[28px] p-7 ${['bg-lilac', 'bg-mint', 'bg-peach'][i % 3]}`}
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
+                <Icon className="h-5 w-5 text-navy" aria-hidden="true" />
+              </span>
+              <p className="mt-5 font-display text-2xl font-light">{label}</p>
               {href ? (
                 <a
                   href={href}

@@ -10,6 +10,13 @@ import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/noto-sans-devanagari/400.css';
+// Display face of the v3 design: thin + bold headline pairs.
+import '@fontsource/inter-tight/300.css';
+import '@fontsource/inter-tight/400.css';
+import '@fontsource/inter-tight/500.css';
+import '@fontsource/inter-tight/600.css';
+import '@fontsource/inter-tight/700.css';
+import '@fontsource/inter-tight/800.css';
 import './index.css';
 
 import { AppProviders } from './app-providers';

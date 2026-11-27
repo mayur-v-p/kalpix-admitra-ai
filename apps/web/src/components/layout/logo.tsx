@@ -20,19 +20,19 @@ export function Logo({
           width="32"
           height="32"
           rx="8"
-          className={tone === 'dark' ? 'fill-indigo-deep' : 'fill-paper'}
+          className={tone === 'dark' ? 'fill-navy' : 'fill-blue'}
         />
         <path
           d="M7 22c3-9 6-13 9-13s4 5 2 8-6 3-6 0 5-6 10-5"
           fill="none"
-          stroke="var(--color-lamp)"
+          stroke={tone === 'dark' ? 'var(--color-gold)' : '#ffffff'}
           strokeWidth="2.4"
           strokeLinecap="round"
         />
       </svg>
       <span
         className={cn(
-          'font-display text-lg tracking-[0.2em] uppercase',
+          'font-display text-[21px] font-bold tracking-[-0.01em]',
           tone === 'dark' ? 'text-ink' : 'text-paper',
         )}
       >

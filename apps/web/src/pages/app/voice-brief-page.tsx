@@ -481,12 +481,17 @@ export function VoiceBriefPage() {
             <>
               <p className="mt-2 max-w-2xl text-muted">You said: “{transcript}”</p>
               {ai.isFetching ? (
-                <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-soft px-3 py-1 text-sm text-indigo-deep" role="status">
-                  <Sparkles className="h-3.5 w-3.5 animate-pulse" aria-hidden="true" /> AI is reading what you said…
+                <p
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-soft px-3 py-1 text-sm text-indigo-deep"
+                  role="status"
+                >
+                  <Sparkles className="h-3.5 w-3.5 animate-pulse" aria-hidden="true" /> AI is
+                  reading what you said…
                 </p>
               ) : ai.data ? (
                 <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-soft px-3 py-1 text-sm text-indigo-deep">
-                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> Understood by AI. Please check every line.
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> Understood by AI. Please
+                  check every line.
                 </p>
               ) : null}
             </>

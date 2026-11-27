@@ -126,7 +126,7 @@ export function AppLayout() {
         </span>
         <span className="min-w-0">
           <span className="block truncate font-medium">{name}</span>
-          <span className="block truncate text-sm text-muted">
+          <span className="block truncate text-sm text-[#b8bde6]">
             {user?.is_anonymous ? 'Free try' : user?.email}
           </span>
         </span>
@@ -134,7 +134,7 @@ export function AppLayout() {
       <button
         type="button"
         onClick={onSignOut}
-        className="mt-3 flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-ink hover:bg-ink/5"
+        className="mt-3 flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-[#c9cdf0] hover:bg-white/5"
       >
         <LogOut className="h-5 w-5" aria-hidden="true" /> Sign out
       </button>
@@ -153,7 +153,7 @@ export function AppLayout() {
       {/* Desktop sidebar (the column keeps its white background on long pages) */}
       <div className="kx-side hidden lg:block">
         <aside className="sticky top-0 flex h-dvh flex-col gap-6 overflow-y-auto p-5">
-          <Logo />
+          <Logo tone="light" className="text-white" />
           <nav aria-label="App" className="flex-1">
             <NavList />
           </nav>
@@ -189,13 +189,13 @@ export function AppLayout() {
             role="dialog"
             aria-modal="true"
             aria-label="App menu"
-            className="animate-fade-up absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] flex-col gap-6 overflow-y-auto bg-card p-5 shadow-billboard"
+            className="animate-fade-up absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] flex-col gap-6 overflow-y-auto kx-side p-5 shadow-billboard"
           >
             <div className="flex items-center justify-between">
-              <Logo />
+              <Logo tone="light" />
               <button
                 type="button"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full hover:bg-ink/5"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-white hover:bg-white/10"
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
               >

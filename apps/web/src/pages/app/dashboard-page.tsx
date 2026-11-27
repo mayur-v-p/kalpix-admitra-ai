@@ -204,9 +204,11 @@ export function DashboardPage() {
             aria-label={firstName ? `Namaste, ${firstName}.` : 'Namaste.'}
           >
             <span aria-hidden="true">
-              <span className="word">Namaste{firstName ? ',' : '.'}</span>{' '}
+              <span className="word font-light">Namaste{firstName ? ',' : '.'}</span>{' '}
               {firstName && (
-                <span className="word kx-gold-text [animation-delay:140ms]">{firstName}.</span>
+                <span className="word font-bold text-blue [animation-delay:140ms]">
+                  {firstName}.
+                </span>
               )}
             </span>
           </h1>
@@ -253,20 +255,11 @@ export function DashboardPage() {
         {stats.map((s, i) => (
           <div
             key={s.label}
-            className="kx-card kx-lift kx-rise flex flex-col gap-1 rounded-[26px] p-5"
+            className={`kx-lift kx-rise flex flex-col gap-1 rounded-[26px] p-5 ${['bg-pink', 'bg-lemon', 'bg-lilac', 'bg-mint'][i % 4]}`}
             style={{ animationDelay: `${i * 80}ms` }}
           >
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-medium text-muted">{s.label}</p>
-              <span
-                className="flex h-8 w-8 items-center justify-center rounded-xl"
-                style={{ background: s.tint }}
-                aria-hidden="true"
-              >
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />
-              </span>
-            </div>
-            <p className="font-display text-[44px] leading-none font-medium text-ink">
+            <p className="w-fit rounded-full bg-white px-3 py-1 text-xs font-semibold">{s.label}</p>
+            <p className="mt-3 font-display text-[58px] leading-none font-light text-ink">
               {Math.round(s.value * e)}
             </p>
             <svg
@@ -476,8 +469,8 @@ export function DashboardPage() {
             >
               <defs>
                 <linearGradient id="setup-ring" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#3b3a8f" />
-                  <stop offset="1" stopColor="#e8b04b" />
+                  <stop offset="0" stopColor="#0b1033" />
+                  <stop offset="1" stopColor="#3f7bff" />
                 </linearGradient>
               </defs>
               <circle cx="56" cy="56" r="48" fill="none" stroke="#efebf9" strokeWidth="12" />
@@ -520,7 +513,7 @@ export function DashboardPage() {
                 <li key={s.label}>
                   <Link
                     to={s.to}
-                    className="kx-lift flex min-h-12 items-center justify-between rounded-2xl bg-gradient-to-r from-[#fff6e4] to-[#fbe7bf] px-4 font-semibold"
+                    className="kx-lift flex min-h-12 items-center justify-between rounded-2xl bg-[#e8efff] px-4 font-semibold"
                   >
                     {s.label} <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>

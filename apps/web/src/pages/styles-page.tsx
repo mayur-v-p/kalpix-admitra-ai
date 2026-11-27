@@ -41,7 +41,7 @@ export function StylesPage() {
         />
 
         <form
-          className="mt-8 grid gap-4 rounded-2xl border border-line bg-card p-4 sm:grid-cols-2 md:p-5 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end"
+          className="mt-9 grid gap-4 rounded-[24px] bg-paper-deep p-5 sm:grid-cols-2 md:p-6 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end"
           onSubmit={(e) => e.preventDefault()}
           aria-label="Filter styles"
         >
@@ -88,10 +88,12 @@ export function StylesPage() {
           </div>
         )}
 
-        <div className="mt-12 flex flex-col items-start gap-4 rounded-2xl bg-ink p-6 text-paper md:flex-row md:items-center md:justify-between md:p-8">
-          <p className="text-lg">Want to see these styles with your own product and offer?</p>
-          <ButtonLink to="/signup" className="w-full md:w-auto">
-            Start free
+        <div className="kx-night mt-14 flex flex-col items-start gap-5 rounded-[30px] p-8 text-white md:flex-row md:items-center md:justify-between md:p-12">
+          <p className="font-display text-[clamp(26px,3vw,40px)] leading-tight font-extrabold uppercase">
+            Can't decide? <span className="text-blue">Let AI</span> pick three
+          </p>
+          <ButtonLink to="/try" size="lg" className="kx-bluepulse w-full md:w-auto">
+            Try it free
           </ButtonLink>
         </div>
       </Container>
@@ -120,7 +122,7 @@ function FilterSelect({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-11 w-full rounded-xl border border-line bg-paper px-3 text-base"
+        className="min-h-12 w-full rounded-2xl border border-line bg-white px-3 text-base"
       >
         <option value="all">All</option>
         {options.map(([v, l]) => (

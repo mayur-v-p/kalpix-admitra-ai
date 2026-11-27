@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { OutlineDemo } from '@/components/marketing/outline-demo';
 import { Button } from '@/components/ui/button';
 import { Container, Section } from '@/components/ui/container';
+import { ThinBold } from '@/components/ui/thin-bold';
 
 /** Shared two-column shell for the sign-in pages. The illustration panel shows on large screens. */
 export function AuthShell({
@@ -17,23 +17,48 @@ export function AuthShell({
   return (
     <Section className="pt-8 md:pt-14">
       <Container className="grid items-stretch gap-10 lg:grid-cols-2">
-        <div className="mx-auto w-full max-w-md">
-          <h1 className="">{title}</h1>
+        <div className="mx-auto w-full max-w-md lg:order-2 lg:self-center">
+          <h1 className="text-[clamp(38px,4.4vw,52px)] leading-[1.05] tracking-[-0.03em]">
+            <ThinBold text={title} />
+          </h1>
           <p className="mt-3 text-muted">{subtitle}</p>
           <div className="mt-8">{children}</div>
         </div>
-        <div className="hidden overflow-hidden rounded-3xl bg-gradient-to-b from-lamp-soft to-[#e7d2ad] p-10 lg:flex lg:flex-col lg:justify-between">
-          <p className="font-display text-2xl tracking-[0.15em] text-ink/80 uppercase">
-            One profile.
-            <br />
-            Every ad.
-          </p>
-          <div className="mx-auto h-72 w-56">
-            <OutlineDemo offer="NEW" productName="Your product" />
+        {/* Navy photo panel with a floating ad card (v3). */}
+        <div className="relative hidden min-h-[620px] flex-col justify-between overflow-hidden rounded-[32px] p-10 text-white lg:flex">
+          <img
+            src="/images/cafe-hero.jpg"
+            alt=""
+            className="kb absolute inset-0 h-full w-full object-cover"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[linear-gradient(160deg,rgb(11_16_51/0.92),rgb(18_26_74/0.75)_60%,rgb(11_16_51/0.95))]"
+          />
+          <span className="relative w-fit rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-sm">
+            हिंदी · मराठी · English
+          </span>
+          <div className="relative w-64 self-center overflow-hidden rounded-[30px] bg-pink text-ink shadow-2xl [animation:float_5s_ease-in-out_infinite]">
+            <img src="/images/chai.jpg" alt="" className="h-52 w-full object-cover" />
+            <div className="p-4">
+              <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold">Café</span>
+              <p className="mt-2.5 font-display text-2xl leading-tight font-light">
+                Garam chai,
+                <br />
+                <strong className="font-bold">ghar jaisa swaad</strong>
+              </p>
+            </div>
           </div>
-          <p className="text-ink/70">
-            Save your logo, colours and products once. Every ad after that takes minutes.
-          </p>
+          <div className="relative">
+            <p className="font-display text-[clamp(26px,2.6vw,36px)] leading-[1.08] font-extrabold uppercase">
+              Say it once.
+              <br />
+              <span className="text-blue">Share it</span> everywhere.
+            </p>
+            <p className="mt-2 text-[#c9cdf0]">
+              Ads for WhatsApp Status, Reels and posters, in your language.
+            </p>
+          </div>
         </div>
       </Container>
     </Section>

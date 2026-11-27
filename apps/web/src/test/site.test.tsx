@@ -5,7 +5,7 @@ import { renderRoute } from './render-route';
 
 describe('public pages', () => {
   it.each([
-    ['/', /ads that build/i],
+    ['/', /speak your ad/i],
     ['/styles', /signature styles/i],
     ['/pricing', /simple plans in rupees/i],
     ['/contact', /talk to us/i],

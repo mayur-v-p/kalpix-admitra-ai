@@ -10,16 +10,20 @@ const aspectClass: Record<Format, string> = {
   '16:9': 'aspect-video',
 };
 
+const PASTELS = ['bg-pink', 'bg-lemon', 'bg-lilac', 'bg-mint', 'bg-peach'];
+const pastelFor = (id: string) =>
+  PASTELS[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % PASTELS.length];
+
 /** A gallery card with a stylised poster preview of one example ad (fictional businesses). */
 export function StyleCard({ example }: { example: StyleExample }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-card shadow-soft">
-      <div className="flex min-h-72 items-center justify-center bg-paper-deep p-5">
+    <article className="kx-card kx-lift flex h-full flex-col overflow-hidden rounded-[28px]">
+      <div className={cn('flex min-h-72 items-center justify-center p-5', pastelFor(example.id))}>
         {/* The outer box is the size container; padding lives on the inner box, because
             container units (cqw) measure the container's content box. */}
         <div
           className={cn(
-            '@container relative w-full overflow-hidden rounded-md text-ink',
+            '@container relative w-full overflow-hidden rounded-2xl text-ink shadow-[0_18px_36px_rgb(11_16_51/0.18)]',
             aspectClass[example.format],
           )}
           style={{ backgroundColor: example.accent }}
@@ -51,7 +55,7 @@ export function StyleCard({ example }: { example: StyleExample }) {
           <Badge>{example.format}</Badge>
           {example.available === 'Soon' && <Badge className="bg-lamp-soft">Coming soon</Badge>}
         </div>
-        <h3 className="font-sans text-lg font-medium tracking-normal normal-case">
+        <h3 className="font-display text-xl font-semibold tracking-normal normal-case">
           {example.title}
         </h3>
         <p className="mt-auto text-sm text-muted">

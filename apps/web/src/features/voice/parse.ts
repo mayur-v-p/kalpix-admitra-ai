@@ -409,7 +409,21 @@ export function detectPurpose(w: string[], hasDiscount: boolean): AdPurpose {
   if (has(w, 'opening', 'inauguration', 'udghatan', 'उद्घाटन', 'शुभारंभ', 'shubharambh', 'grand'))
     return 'opening';
   if (has(w, 'menu', 'मेन्यू', 'मेनू', 'specials', 'special')) return 'menu';
-  if (has(w, 'greeting', 'greetings', 'wishes', 'shubhkamna', 'shubhkamnayein', 'शुभकामनाएँ', 'शुभकामना', 'शुभेच्छा', 'badhai', 'बधाई'))
+  if (
+    has(
+      w,
+      'greeting',
+      'greetings',
+      'wishes',
+      'shubhkamna',
+      'shubhkamnayein',
+      'शुभकामनाएँ',
+      'शुभकामना',
+      'शुभेच्छा',
+      'badhai',
+      'बधाई',
+    )
+  )
     return 'festival';
   if (hasDiscount || has(w, 'sale', 'offer', 'discount', 'सेल', 'ऑफर', 'छूट', 'सवलत')) return 'offer';
   if (has(w, 'arrival', 'arrivals', 'collection', 'launch', 'कलेक्शन')) return 'new_arrivals';
