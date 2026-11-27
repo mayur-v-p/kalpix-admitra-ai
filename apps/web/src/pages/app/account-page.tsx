@@ -141,7 +141,7 @@ export function AccountPage() {
         className="rounded-2xl border border-line bg-card p-6 shadow-soft"
         aria-labelledby="pw"
       >
-        <h2 id="pw" className="text-xl uppercase">
+        <h2 id="pw" className="text-xl">
           Password
         </h2>
         <div className="mt-4">
@@ -153,7 +153,7 @@ export function AccountPage() {
         className="mt-6 rounded-2xl border border-line bg-card p-6 shadow-soft"
         aria-labelledby="mfa"
       >
-        <h2 id="mfa" className="flex items-center gap-2 text-xl uppercase">
+        <h2 id="mfa" className="flex items-center gap-2 text-xl">
           <ShieldCheck className="h-5 w-5" aria-hidden="true" /> Two-step login
         </h2>
         <p className="mt-2 text-muted">

@@ -42,7 +42,7 @@ export function PricingCards() {
               Most popular
             </p>
           )}
-          <h3 className="font-display text-xl tracking-[0.15em] uppercase">{plan.name}</h3>
+          <h3 className="font-display text-xl tracking-[0.15em]">{plan.name}</h3>
           <p className="mt-1 text-sm text-muted">{plan.audience}</p>
           <p className="mt-5 flex items-baseline gap-1">
             <span className="font-display text-4xl font-light">{formatInr(plan.price)}</span>

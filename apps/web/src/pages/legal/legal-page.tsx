@@ -20,7 +20,7 @@ export function LegalPage({
   return (
     <Section className="pt-8 md:pt-14">
       <Container className="max-w-3xl">
-        <h1 className="uppercase">{title}</h1>
+        <h1 className="">{title}</h1>
         <p className="mt-3 text-sm text-muted">Last updated: {site.lastUpdated}</p>
         <p className="mt-4 rounded-xl border border-lamp-deep/40 bg-lamp-soft p-4 text-sm">
           Draft for review: this text must be checked by a qualified lawyer before Kalpix accepts
@@ -44,7 +44,7 @@ export function LegalPage({
         <div className="mt-10 space-y-10">
           {sections.map((s, i) => (
             <section key={s.id} id={s.id} className="scroll-mt-24">
-              <h2 className="text-2xl uppercase md:text-3xl">
+              <h2 className="text-2xl md:text-3xl">
                 {i + 1}. {s.title}
               </h2>
               <div className="mt-3 space-y-3 text-ink/85 [&_li]:ml-5 [&_li]:list-disc [&_ul]:space-y-1.5">

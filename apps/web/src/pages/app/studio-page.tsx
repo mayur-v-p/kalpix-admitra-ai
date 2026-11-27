@@ -31,6 +31,7 @@ import { outlineStyleOptions, type OutlineStyleValue } from '@/features/campaign
 import { formatValidity } from '@/features/campaigns/schemas';
 import { qrUrlFor } from '@/features/exports/api';
 import { ExportPanel } from '@/features/exports/export-panel';
+import { StudioVoiceBar } from '@/features/voice/studio-voice-bar';
 import { useQrCode } from '@/features/exports/hooks';
 import { ConfirmFact } from '@/features/products/confirm-fact';
 import { useProduct, useProducts } from '@/features/products/hooks';
@@ -144,7 +145,7 @@ export function StudioPage() {
       <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm font-medium tracking-[0.25em] text-indigo-deep uppercase">Studio</p>
-          <h1 className="text-3xl uppercase md:text-4xl">{c.name}</h1>
+          <h1 className="text-[clamp(30px,4.5vw,42px)] leading-[1.05]">{c.name}</h1>
         </div>
         <a href="#export" className={cn(buttonVariants({ variant: 'dark' }), 'w-full md:w-auto')}>
           <Download className="h-5 w-5" aria-hidden="true" /> Export
@@ -274,6 +275,16 @@ export function StudioPage() {
 
         {/* Controls */}
         <aside className="flex flex-col gap-6" aria-label="Campaign details">
+          <StudioVoiceBar
+            campaign={c}
+            product={product.data ?? null}
+            onChanged={() =>
+              Promise.all([
+                refresh(),
+                queryClient.invalidateQueries({ queryKey: ['product', c.product_id] }),
+              ])
+            }
+          />
           <ExportPanel
             campaignId={c.id}
             campaignName={c.name}

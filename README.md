@@ -1,67 +1,109 @@
-# Kalpix
+# Kalpix (formerly AdMitra AI)
 
-AI ad studio for Indian businesses: signature animated ads, AI video scenes, posters and copy from one saved business profile.
+**A voice-first ad maker for India's small shops.** A shop owner taps the mic and says, in
+Hindi, Marathi, Hinglish or English, the ad they want:
 
-## Documents
+> *"Mere clothing store ke liye Diwali sale ka ad banao. Saree 1500 rupaye ki hai, 20 percent
+> discount, 15 se 20 November tak, shaam 5 se 9 baje."*
 
-| File | What it covers |
-|---|---|
-| [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | Plain-language summary of the whole project (start here) |
-| [prd.md](prd.md) | Product requirements: what to build |
-| [architecture.md](architecture.md) | React + Supabase design, schema, security baseline, build order (M0–M8) |
-| [payment-gateway.md](payment-gateway.md) | Razorpay specification (M7) |
-| [security.md](security.md) | Security audit checklist, run at the end of each milestone |
-| [responsivness.md](responsivness.md) | Mobile responsiveness rules and audit |
+Kalpix fills in the ad details (product, price, discount, dates, time), shows them on one screen
+to check and change, reads them back aloud ("सही है?" — is this right?), and makes an animated
+ad with the shop's product photo, ready for WhatsApp Status, Reels and posters. Prices, phone
+numbers and dates are **never invented by AI**: only values the owner confirms appear on the ad.
 
-## Project layout
+---
 
-```
-apps/web/               React + Vite + TypeScript + Tailwind website (M1: public site)
-apps/media-worker/      Remotion/FFmpeg render worker (M5)
-packages/styles-engine/ Shared signature-style templates (M4)
-packages/shared-types/  Shared types and job schemas (M2+)
-supabase/               Supabase CLI project: config, migrations, Edge Functions (M2+)
-```
+## Start it with one command
 
-## Run it
-
-Needs Node 20+ and Docker Desktop (for the local database).
+Needs [Docker](https://docs.docker.com/get-docker/). No keys, no accounts.
 
 ```bash
-npm install
-npm run db:start       # local Supabase in Docker (first run downloads images)
-npm run dev            # http://localhost:5173, using the LOCAL database
-npm run dev:staging    # same site, using the admitra-staging project
-npm run worker         # render worker for Studio exports (needs apps/media-worker/.env)
+git clone https://github.com/mayur-v-p/kalpix-admitra-ai.git
+cd kalpix-admitra-ai
+docker compose up --build
 ```
 
-Exports are rendered by [apps/media-worker](apps/media-worker/README.md). Copy
-`apps/media-worker/.env.example` to `apps/media-worker/.env` and add the local secret key from
-`npx supabase status`. Without the worker running, exports wait in the queue.
+Then open **http://localhost:8080** in **Chrome or Edge** (their built-in speech recognition
+powers the voice feature; other browsers can type instead).
 
-Local services while `db:start` is running:
+The website connects to the hosted Kalpix backend (Supabase). The URL and the *publishable* key
+in [docker-compose.yml](docker-compose.yml) are public by design (every visitor's browser gets
+them). **No secret key is needed** to start the app or try the main flow.
 
-| What | URL |
+### Try the voice flow (about 2 minutes)
+
+1. Open **Free try** in the top menu (or http://localhost:8080/try) and press **Start my free
+   try**. No sign-up or email is needed.
+2. You land on **Check your ad**. Tap **Speak your ad**, allow the microphone, pick हिंदी /
+   मराठी / English, and say what you want, for example the sentence above. Or just *"Mujhe Diwali
+   sale ka ad chahiye"* and fill the rest later.
+3. Check the list. Tap any line to change it, or press **Fill by voice** and answer Kalpix's
+   questions (*"कीमत कितनी है?"*: "pandrah sau"). The sale price is worked out by code.
+4. Press **Create ad**. Kalpix reads the details back; tap **हाँ, ऐड बनाइए** (or say "haan").
+5. The **Studio** opens with your animated ad playing. Try **Change something**: say
+   *"discount 30 percent karo"* or *"English mein karo"*.
+
+### What needs a key (and what happens without one)
+
+| Feature | Without a key |
 |---|---|
-| Supabase Studio (browse tables) | http://127.0.0.1:54323 |
-| Mailpit (sign-up and password emails) | http://127.0.0.1:54324 |
+| Speak your ad, understanding the request, spoken read-back | Works: the browser's speech tools + Kalpix's own parser for Hindi/Marathi/Hinglish numbers, dates and offers |
+| Animated ad preview in the Studio | Works: rendered live in the browser |
+| AI ad copy, background removal, AI video scenes | Run in **test mode** (clearly labelled sample results) |
+| Video/GIF/poster file export | Needs the render worker (`apps/media-worker`), which uses a server key; not part of the one-command start |
+| Payments (Razorpay) | Shows "Payments are not switched on yet" |
 
-Env files (all git-ignored): `apps/web/.env.development.local` points `npm run dev` at the local database; `apps/web/.env.local` holds the staging URL and publishable key; `apps/media-worker/.env` holds the worker's server-only secret key.
+---
+
+## What's inside
+
+```
+apps/web/               React 19 + Vite + TypeScript + Tailwind website and app
+  src/features/voice/   Voice: speech in/out, the Hindi/Marathi/Hinglish parser, Studio voice bar
+apps/media-worker/      Remotion + FFmpeg render worker for video/GIF/poster exports
+packages/styles-engine/ The animated ad templates (shared by the browser preview and the worker)
+supabase/               Database migrations (row-level security), Edge Functions, 210 pgTAP tests
+```
+
+- **Voice:** Web Speech API (speech to text and text to speech), no key. Understanding is a
+  rule-based parser ([parse.ts](apps/web/src/features/voice/parse.ts)) for number words
+  ("pandrah sau", "पंधराशे", "dedh hazaar"), percentages, dates ("15 se 20 November"), times
+  ("shaam 5 se 9 baje"), products, festivals and yes/no ("haan", "हो", "नको").
+- **Accuracy:** every value is shown, editable and read back before use; the database refuses
+  to export an ad with an unconfirmed price, offer, phone or address.
+- **Security:** row-level security on every table, server-side checks for credits and payments,
+  security audit in [SECURITY_AUDIT.md](SECURITY_AUDIT.md).
+
+More: [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) (plain-language summary),
+[architecture.md](architecture.md), [prd.md](prd.md).
+
+---
+
+## Developing locally (full stack)
+
+Needs Node 20+ and Docker Desktop.
+
+```bash
+npm install            # if npm 10 fails on this workspace, use: npx -y npm@11 install
+npm run db:start       # local Supabase in Docker
+npm run dev            # http://localhost:5173 on the LOCAL database
+npm run dev:staging    # same site on the hosted staging backend
+npm run worker         # render worker for exports (needs apps/media-worker/.env)
+```
 
 Checks:
 
 ```bash
 npm run lint
 npm run typecheck
-npm test               # unit tests (Supabase is mocked)
+npm test               # unit tests, including the voice parser
 npm run db:test        # database security tests (pgTAP, needs db:start)
-npm run db:lint
-npm run db:types       # regenerate apps/web/src/types/database.ts after a migration
 npm run build
 ```
 
-Database changes go in `supabase/migrations/`. Apply locally with `npm run db:reset`; push to staging with `npm run db:push:staging`.
+Env files are git-ignored: `apps/web/.env.local` (staging URL + publishable key),
+`apps/web/.env.development.local` (local), `supabase/.env` and `apps/media-worker/.env`
+(server-only secrets, never committed).
 
-## Before going live
-
-Replace the `[ ... ]` placeholders in `apps/web/src/config/site.ts` (business name, support email, phone, city, grievance officer) and have a lawyer review the Privacy, Terms and Refund pages.
+Sample photos: [Pexels](https://www.pexels.com/), see
+[apps/web/public/images/CREDITS.md](apps/web/public/images/CREDITS.md).

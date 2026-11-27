@@ -55,7 +55,7 @@ export function OnboardingPage() {
 
       {current === 0 && (
         <section>
-          <h1 className="text-3xl uppercase md:text-4xl">What kind of business is it?</h1>
+          <h1 className="text-3xl md:text-4xl">What kind of business is it?</h1>
           <p className="mt-3 text-muted">
             This sets your templates, calls to action and festival calendar.
           </p>
@@ -97,7 +97,7 @@ export function OnboardingPage() {
 
       {current === 1 && (
         <section>
-          <h1 className="text-3xl uppercase md:text-4xl">Tell us about your business</h1>
+          <h1 className="text-3xl md:text-4xl">Tell us about your business</h1>
           <p className="mt-3 mb-8 text-muted">
             These details appear on your ads. You can change them any time.
           </p>
@@ -126,7 +126,7 @@ export function OnboardingPage() {
 
       {current === 2 && data.business && (
         <section>
-          <h1 className="text-3xl uppercase md:text-4xl">Make it look like you</h1>
+          <h1 className="text-3xl md:text-4xl">Make it look like you</h1>
           <p className="mt-3 mb-8 text-muted">Your logo, colours and tone are used on every ad.</p>
           <BrandForm
             bundle={data}

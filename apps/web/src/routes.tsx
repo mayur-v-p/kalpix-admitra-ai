@@ -68,6 +68,13 @@ export const routes: RouteObject[] = [
           { path: 'products/:id', element: <ProductPage /> },
           { path: 'campaigns', element: <CampaignsPage /> },
           { path: 'campaigns/new', element: <CampaignNewPage /> },
+          {
+            // "Check your ad" after speaking; it plays the real ad, so Remotion loads only here.
+            path: 'voice',
+            lazy: async () => ({
+              Component: (await import('@/pages/app/voice-brief-page')).VoiceBriefPage,
+            }),
+          },
           { path: 'billing', element: <BillingPage /> },
           { path: 'account', element: <AccountPage /> },
           { path: 'payment/success', element: <PaymentResultPage outcome="success" /> },

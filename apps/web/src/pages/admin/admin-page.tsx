@@ -234,7 +234,7 @@ function AdjustCredits({ user, onClose }: { user: AdminUser; onClose: () => void
   const n = Number(amount);
   return (
     <section className="rounded-2xl border border-ink bg-card p-6" aria-labelledby="adjust">
-      <h2 id="adjust" className="text-lg uppercase">
+      <h2 id="adjust" className="text-lg">
         Change credits: {user.business_name ?? user.email ?? 'free try'}
       </h2>
       <p className="mt-1 text-sm text-muted">
@@ -342,7 +342,7 @@ function PlansAndScenes() {
         {saved && <FormMessage tone="success">{saved}</FormMessage>}
       </div>
       <section aria-labelledby="admin-plans">
-        <h2 id="admin-plans" className="text-xl uppercase">
+        <h2 id="admin-plans" className="text-xl">
           Plans
         </h2>
         <p className="mt-1 text-sm text-muted">
@@ -358,7 +358,7 @@ function PlansAndScenes() {
         </div>
       </section>
       <section aria-labelledby="admin-scenes">
-        <h2 id="admin-scenes" className="text-xl uppercase">
+        <h2 id="admin-scenes" className="text-xl">
           AI scene types
         </h2>
         <ul className="mt-4 divide-y divide-line rounded-2xl border border-line bg-card">

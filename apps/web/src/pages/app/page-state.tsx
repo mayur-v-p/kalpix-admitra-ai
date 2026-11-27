@@ -35,11 +35,11 @@ export function PageHeader({
   return (
     <div className="mb-8 max-w-2xl">
       {eyebrow && (
-        <p className="mb-2 text-sm font-medium tracking-[0.25em] text-indigo-deep uppercase">
+        <p className="mb-2 text-[13px] font-semibold tracking-[0.2em] text-indigo uppercase">
           {eyebrow}
         </p>
       )}
-      <h1 className="text-3xl uppercase md:text-4xl">{title}</h1>
+      <h1 className="text-[clamp(30px,4.5vw,42px)] leading-[1.05]">{title}</h1>
       {intro && <p className="mt-3 text-muted">{intro}</p>}
     </div>
   );

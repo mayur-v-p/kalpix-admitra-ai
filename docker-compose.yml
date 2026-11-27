@@ -1,0 +1,19 @@
+# Start Kalpix with one command:   docker compose up --build
+# Then open http://localhost:8080 (use Chrome or Edge for "Speak your ad").
+#
+# The website connects to the hosted Kalpix staging backend (Supabase). The two values below
+# are PUBLIC by design: the publishable key is what every visitor's browser receives. No
+# secret key is needed. To use your own Supabase project, set these two variables first.
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-https://lzbvlrlhrniofetioarp.supabase.co}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-sb_publishable_cKaYAt67D1vRHD_G_S4kjA_z-gYTlio}
+        VITE_TURNSTILE_SITE_KEY: ${VITE_TURNSTILE_SITE_KEY:-}
+        VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
+    ports:
+      - "8080:80"
+    restart: unless-stopped

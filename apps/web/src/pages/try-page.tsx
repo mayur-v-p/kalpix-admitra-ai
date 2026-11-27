@@ -11,6 +11,7 @@ import { useCaptcha } from '@/features/auth/captcha';
 import { supabase } from '@/lib/supabase';
 
 const included = [
+  'Tap the mic and say the ad you want, in Hindi, Marathi or English',
   'Add one product photo: we cut it out and trace its outline',
   'Write your offer and see your animated ad play live',
   'Export one short video (9:16, low resolution, with the Kalpix watermark)',
@@ -40,7 +41,8 @@ export function TryPage() {
       captcha.reset();
       return setError(friendlyAuthError(e));
     }
-    navigate('/app/onboarding', { replace: true });
+    // Straight to voice: speak the ad, check it, create it (the business is filled in there).
+    navigate('/app/voice', { replace: true });
   };
 
   return (

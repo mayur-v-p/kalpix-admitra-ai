@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { HeroAd } from '@/components/marketing/hero-ad';
+import { HeroAdPhoto } from '@/components/marketing/hero-ad-photo';
 import { CountUp } from '@/components/motion/count-up';
 import { Reveal } from '@/components/motion/reveal';
 import { ButtonLink } from '@/components/ui/button';
@@ -8,22 +8,8 @@ import { Container } from '@/components/ui/container';
 import { SHOP_PARAM } from '@/features/auth/auth-schemas';
 import { formatInr } from '@/lib/utils';
 
-const madeFor = ['Cafés', 'Clothing stores', 'Salons', 'Sweet shops', 'Jewellers', 'Gyms'];
-
-const steps = [
-  {
-    title: 'Add your product',
-    text: 'One phone photo. We remove the background and trace its outline.',
-  },
-  {
-    title: 'Write your offer',
-    text: 'Price, discount and dates. You confirm each one before it appears.',
-  },
-  {
-    title: 'Download and share',
-    text: 'Video, GIF and poster in every size, with a QR code to WhatsApp.',
-  },
-];
+const headlineWords = ['Ads', 'that', 'build', 'themselves,'];
+const shops = ['for your café.', 'for your restaurant.', 'for your boutique.'];
 
 /** The shop name typed here travels to sign-up, which offers it to onboarding. */
 function HeroForm() {
@@ -37,7 +23,7 @@ function HeroForm() {
   return (
     <form
       onSubmit={submit}
-      className="flex max-w-[540px] flex-col gap-2 rounded-2xl border border-line bg-card p-1.5 sm:flex-row"
+      className="flex max-w-[540px] flex-col gap-2 rounded-2xl bg-card p-1.5 sm:flex-row"
     >
       <label htmlFor="hero-shop" className="sr-only">
         Your shop name
@@ -49,11 +35,11 @@ function HeroForm() {
         placeholder="Your shop name"
         autoComplete="organization"
         maxLength={120}
-        className="min-h-12 flex-1 rounded-xl bg-transparent px-3.5 text-base outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-indigo"
+        className="min-h-12 flex-1 rounded-xl bg-transparent px-3.5 text-base text-ink outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-indigo"
       />
       <button
         type="submit"
-        className="btn-shine inline-flex min-h-12 items-center justify-center rounded-xl bg-lamp px-5 font-semibold text-ink transition-transform hover:bg-lamp-deep"
+        className="btn-shine inline-flex min-h-12 items-center justify-center rounded-xl bg-lamp px-5 font-semibold text-ink hover:bg-lamp-deep"
       >
         Create my first ad →
       </button>
@@ -61,125 +47,117 @@ function HeroForm() {
   );
 }
 
+/** Home page, version 2: a real café photo behind the headline, then why Kalpix and pricing. */
 export function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="pt-10 pb-10 md:pt-14">
-        <Container className="flex flex-wrap items-center gap-12">
-          <div className="flex min-w-0 flex-[1_1_440px] flex-col gap-5">
-            <div className="animate-fade-up flex flex-wrap gap-2">
-              <span className="rounded-full border border-line bg-card px-3.5 py-1.5 text-sm">
-                Videos
-              </span>
-              <span className="rounded-full border border-line bg-card px-3.5 py-1.5 text-sm">
-                Posters
-              </span>
-              <span className="rounded-full bg-indigo-deep px-3.5 py-1.5 text-sm text-white">
-                WhatsApp Status
-              </span>
-            </div>
-            <h1 className="animate-fade-up text-[clamp(40px,6vw,76px)] leading-[1.03] font-medium tracking-[-0.01em] [animation-delay:120ms]">
-              Ads that build themselves, <span className="text-indigo">for your shop.</span>
-            </h1>
-            <p className="animate-fade-up max-w-[540px] text-lg leading-relaxed text-muted [animation-delay:240ms] md:text-[19px]">
-              Add one product photo and your offer. Kalpix makes animated ads, posters and captions
-              in minutes, with your prices exactly as you confirm them.
+      <section className="relative overflow-hidden bg-ink">
+        <img
+          src="/images/cafe-hero.jpg"
+          alt=""
+          className="kb absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgb(28_27_58/0.92)_0%,rgb(28_27_58/0.78)_45%,rgb(28_27_58/0.35)_100%)]"
+        />
+        <Container className="relative flex flex-wrap items-center gap-10 py-14 md:py-16">
+          <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5 text-paper">
+            <p className="animate-fade-up w-fit rounded-full border border-paper/30 bg-paper/15 px-3.5 py-1.5 text-sm">
+              AI ad studio for Indian shops
             </p>
-            <div className="animate-fade-up [animation-delay:360ms]">
+            <h1
+              className="text-[clamp(40px,5.6vw,72px)] leading-[1.1] font-medium"
+              aria-label="Ads that build themselves, for your café, restaurant or boutique."
+            >
+              <span aria-hidden="true">
+                {headlineWords.map((w, i) => (
+                  <span key={w}>
+                    <span className="word" style={{ animationDelay: `${100 + i * 120}ms` }}>
+                      {w}
+                    </span>{' '}
+                  </span>
+                ))}
+                <span className="word inline-grid text-lamp [animation-delay:700ms]">
+                  {shops.map((s, i) => (
+                    <span key={s} className={i === 0 ? 'rot' : i === 1 ? 'rot rot-2' : 'rot rot-3'}>
+                      {s}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            </h1>
+            <p className="animate-fade-up max-w-[560px] text-lg leading-relaxed text-paper/90 [animation-delay:300ms] md:text-[19px]">
+              Add one product photo and your offer, or just say it. Kalpix makes animated ads,
+              posters and captions in minutes, with your prices exactly as you confirm them.
+            </p>
+            <div className="animate-fade-up [animation-delay:450ms]">
               <HeroForm />
             </div>
-            <p className="animate-fade-up text-sm text-muted [animation-delay:480ms]">
+            <p className="animate-fade-up text-sm text-paper/80 [animation-delay:600ms]">
               Free plan · No card needed · Or{' '}
-              <Link to="/try" className="text-indigo underline underline-offset-4">
+              <Link to="/try" className="text-paper underline underline-offset-4">
                 try one ad without signing up
               </Link>
             </p>
           </div>
-          <div className="animate-fade-up min-w-0 flex-[1_1_400px] [animation-delay:240ms]">
-            <HeroAd />
+          <div className="animate-fade-up min-w-0 flex-[1_1_380px] [animation-delay:300ms]">
+            <HeroAdPhoto />
           </div>
         </Container>
       </section>
 
-      {/* Made for */}
-      <section className="pb-10">
-        <Container>
-          <Reveal className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-y border-line py-5 font-display text-xl text-muted">
-            <span>Made for</span>
-            {madeFor.map((m) => (
-              <span key={m} className="text-ink">
-                {m}
-              </span>
-            ))}
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* How it works */}
-      <section className="py-12 md:py-16">
-        <Container>
-          <Reveal>
-            <p className="text-center text-[13px] font-semibold tracking-[0.2em] text-indigo">
-              HOW IT WORKS
-            </p>
-            <h2 className="mt-2.5 text-center font-medium">Three steps to your first ad</h2>
-          </Reveal>
-          <ol className="mt-9 grid gap-5 md:grid-cols-3">
-            {steps.map((s, i) => (
-              <Reveal
-                as="li"
-                key={s.title}
-                delay={(i + 1) * 120}
-                className="card-lift rounded-3xl border border-line bg-card p-7"
-              >
-                <p className="font-display text-[44px] leading-none font-light text-lamp-deep">
-                  0{i + 1}
-                </p>
-                <h3 className="mt-3 font-sans text-xl font-semibold tracking-normal">{s.title}</h3>
-                <p className="mt-2 leading-relaxed text-muted">{s.text}</p>
-              </Reveal>
-            ))}
-          </ol>
-        </Container>
-      </section>
-
       {/* Why Kalpix */}
-      <section className="py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <Container>
           <Reveal>
             <p className="text-center text-[13px] font-semibold tracking-[0.2em] text-indigo">
               WHY KALPIX
             </p>
-            <h2 className="mt-2.5 text-center font-medium">Why shop owners choose Kalpix</h2>
+            <h2 className="mt-2.5 text-center">Why shop owners choose Kalpix</h2>
           </Reveal>
           <div className="mt-9 grid gap-5 md:grid-cols-3">
-            <Reveal delay={120} className="flex flex-col gap-2.5 rounded-[28px] bg-lamp-soft p-8">
-              <CountUp to={10} className="font-display text-7xl leading-none font-medium" />
-              <p className="text-xl font-medium">free credits to start</p>
-              <p className="text-muted">Enough for your first ads in every size. No card needed.</p>
-            </Reveal>
-            <Reveal delay={240} className="flex flex-col gap-2.5 rounded-[28px] bg-indigo-soft p-8">
-              <CountUp
-                to={4}
-                className="font-display text-7xl leading-none font-medium text-indigo"
+            <Reveal
+              delay={120}
+              className="card-lift relative min-h-[280px] overflow-hidden rounded-[28px] text-paper"
+            >
+              <img
+                src="/images/cafe-interior.jpg"
+                alt="A bright café interior with tables and chairs"
+                className="kb absolute inset-0 h-full w-full object-cover"
               />
-              <p className="text-xl font-medium">sizes from one design</p>
-              <div className="mt-1.5 flex items-end gap-2.5" aria-hidden="true">
-                <div className="h-16 w-9 rounded-md bg-indigo" />
-                <div className="h-[50px] w-[50px] rounded-md bg-indigo" />
-                <div className="h-[55px] w-11 rounded-md bg-indigo" />
-                <div className="h-[45px] w-20 rounded-md bg-indigo" />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-[linear-gradient(180deg,rgb(28_27_58/0.05)_30%,rgb(28_27_58/0.85)_100%)]"
+              />
+              <div className="absolute inset-x-7 bottom-6">
+                <p className="text-[22px] font-semibold">Made for real Indian shops</p>
+                <p className="mt-1.5 text-paper/85">
+                  Cafés, restaurants, boutiques, kirana stores and more.
+                </p>
               </div>
             </Reveal>
             <Reveal
-              delay={360}
-              className="flex flex-col gap-3.5 rounded-[28px] bg-indigo-deep p-8 text-paper"
+              delay={240}
+              className="card-lift flex flex-col gap-2.5 rounded-[28px] bg-lamp-soft p-8"
             >
-              <p className="text-xl font-medium">Your prices, exactly</p>
+              <CountUp to={10} className="font-display text-7xl leading-none font-medium" />
+              <p className="text-xl font-medium">free credits to start</p>
+              <CountUp
+                to={4}
+                className="mt-2.5 font-display text-7xl leading-none font-medium text-indigo"
+              />
+              <p className="text-xl font-medium">sizes from one design</p>
+            </Reveal>
+            <Reveal
+              delay={360}
+              className="card-lift flex flex-col gap-3.5 rounded-[28px] bg-indigo-deep p-8 text-paper"
+            >
+              <p className="text-[22px] font-semibold">Your prices, exactly</p>
               <p className="leading-relaxed text-paper/80">
                 AI never invents a price, phone number or date. Only what you confirm goes into the
-                ad.
+                ad, even when you speak it.
               </p>
               <div
                 className="badge-pop mt-1.5 flex h-24 w-24 items-center justify-center rounded-full bg-lamp text-center text-xl leading-none font-bold text-ink"
@@ -195,11 +173,11 @@ export function HomePage() {
       </section>
 
       {/* Pricing band */}
-      <section className="pt-6 pb-16 md:pb-20">
+      <section className="pt-2 pb-16 md:pb-20">
         <Container>
           <Reveal className="flex flex-wrap items-center justify-between gap-7 rounded-[32px] bg-indigo-deep px-6 py-10 text-paper sm:px-10 sm:py-12">
             <div className="min-w-0 flex-[1_1_420px]">
-              <h2 className="leading-tight font-medium">
+              <h2 className="leading-tight">
                 Plans from <CountUp to={399} format={formatInr} className="text-gold" /> a month
               </h2>
               <p className="mt-3 text-lg text-paper/80">

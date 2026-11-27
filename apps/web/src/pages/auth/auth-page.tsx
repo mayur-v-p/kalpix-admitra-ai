@@ -18,7 +18,7 @@ export function AuthShell({
     <Section className="pt-8 md:pt-14">
       <Container className="grid items-stretch gap-10 lg:grid-cols-2">
         <div className="mx-auto w-full max-w-md">
-          <h1 className="uppercase">{title}</h1>
+          <h1 className="">{title}</h1>
           <p className="mt-3 text-muted">{subtitle}</p>
           <div className="mt-8">{children}</div>
         </div>

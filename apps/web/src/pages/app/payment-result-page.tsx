@@ -35,7 +35,7 @@ export function PaymentResultPage({ outcome }: { outcome: 'success' | 'failed' }
       {failed ? (
         <>
           <XCircle className="mx-auto h-14 w-14 text-red-700" aria-hidden="true" />
-          <h1 className="mt-4 text-3xl uppercase">Payment not completed</h1>
+          <h1 className="mt-4 text-3xl">Payment not completed</h1>
           <p className="mt-3 text-muted">
             Nothing was charged, or the payment did not go through. If money left your account, it
             is returned by your bank automatically, usually within 5–7 working days.
@@ -51,7 +51,7 @@ export function PaymentResultPage({ outcome }: { outcome: 'success' | 'failed' }
       ) : confirmed ? (
         <>
           <CheckCircle2 className="mx-auto h-14 w-14 text-indigo-deep" aria-hidden="true" />
-          <h1 className="mt-4 text-3xl uppercase">Payment confirmed</h1>
+          <h1 className="mt-4 text-3xl">Payment confirmed</h1>
           <p className="mt-3 text-muted">
             Thank you! Your credits have been added and exports no longer carry the watermark.
           </p>
@@ -68,7 +68,7 @@ export function PaymentResultPage({ outcome }: { outcome: 'success' | 'failed' }
             className="mx-auto block h-12 w-12 animate-spin rounded-full border-2 border-line border-t-ink"
             aria-hidden="true"
           />
-          <h1 className="mt-6 text-3xl uppercase">Confirming your payment…</h1>
+          <h1 className="mt-6 text-3xl">Confirming your payment…</h1>
           <p className="mt-3 text-muted" role="status">
             {state.timedOut
               ? 'This is taking longer than usual. Your payment is safe: credits appear on the billing page as soon as Razorpay confirms it.'

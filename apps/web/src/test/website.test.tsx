@@ -7,16 +7,13 @@ import { countValue } from '@/lib/motion';
 import { renderRoute } from './render-route';
 import { mockAuth } from './supabase-mock';
 
-describe('home page (new design)', () => {
+describe('home page (version 2)', () => {
   it('shows the headline, the sample ad and the main sections', async () => {
     renderRoute('/');
     expect(
       await screen.findByRole('heading', { level: 1, name: /ads that build themselves/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole('figure', { name: /example ad/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: /three steps to your first ad/i }),
-    ).toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: /why shop owners choose kalpix/i }),
     ).toBeInTheDocument();

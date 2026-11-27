@@ -209,10 +209,7 @@ export function BillingPage() {
         className="mt-6 grid gap-6 rounded-2xl border border-line bg-card p-6 shadow-soft md:grid-cols-[1fr_auto]"
       >
         <div>
-          <h2
-            id="current-plan"
-            className="text-sm font-medium tracking-[0.2em] text-muted uppercase"
-          >
+          <h2 id="current-plan" className="text-sm font-medium tracking-[0.2em] text-muted">
             Current plan
           </h2>
           <p className="mt-2 font-display text-3xl tracking-[0.12em] uppercase">{s.planName}</p>
@@ -268,7 +265,7 @@ export function BillingPage() {
 
       {/* Plans */}
       <section aria-labelledby="plans" className="mt-10">
-        <h2 id="plans" className="text-xl uppercase md:text-2xl">
+        <h2 id="plans" className="text-xl md:text-2xl">
           Monthly plans
         </h2>
         {plans.isLoading ? (
@@ -285,7 +282,7 @@ export function BillingPage() {
                     wanted === plan.id || current ? 'border-ink ring-1 ring-ink' : 'border-line',
                   )}
                 >
-                  <h3 className="font-display text-xl tracking-[0.15em] uppercase">{plan.name}</h3>
+                  <h3 className="font-display text-xl tracking-[0.15em]">{plan.name}</h3>
                   <p className="mt-1 text-sm text-muted">{plan.audience}</p>
                   <p className="mt-4 flex items-baseline gap-1">
                     <span className="font-display text-3xl font-light">
@@ -355,7 +352,7 @@ export function BillingPage() {
       {/* History */}
       <div className="mt-10 grid gap-8 lg:grid-cols-2">
         <section aria-labelledby="payments" className="min-w-0">
-          <h2 id="payments" className="text-xl uppercase">
+          <h2 id="payments" className="text-xl">
             Payments
           </h2>
           {payments.data?.length ? (
@@ -394,7 +391,7 @@ export function BillingPage() {
         </section>
 
         <section aria-labelledby="credit-history" className="min-w-0">
-          <h2 id="credit-history" className="text-xl uppercase">
+          <h2 id="credit-history" className="text-xl">
             Credit history
           </h2>
           {ledger.data?.length ? (
