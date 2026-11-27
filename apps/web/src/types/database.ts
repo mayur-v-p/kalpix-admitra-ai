@@ -337,6 +337,52 @@ export type Database = {
           },
         ];
       };
+      business_photos: {
+        Row: {
+          business_id: string;
+          created_at: string;
+          id: string;
+          is_main: boolean;
+          label: string | null;
+          path: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          business_id: string;
+          created_at?: string;
+          id?: string;
+          is_main?: boolean;
+          label?: string | null;
+          path: string;
+          workspace_id: string;
+        };
+        Update: {
+          business_id?: string;
+          created_at?: string;
+          id?: string;
+          is_main?: boolean;
+          label?: string | null;
+          path?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'business_photos_business_id_workspace_id_fkey';
+            columns: ['business_id', 'workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'business_profiles';
+            referencedColumns: ['id', 'workspace_id'];
+          },
+          {
+            foreignKeyName: 'business_photos_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       business_profiles: {
         Row: {
           created_at: string;
@@ -1490,6 +1536,7 @@ export type Database = {
         }[];
       };
       review_ai_clip: { Args: { p_approve: boolean; p_clip: string }; Returns: string };
+      set_main_business_photo: { Args: { p_photo_id: string }; Returns: undefined };
     };
     Enums: {
       member_role: 'owner' | 'member';

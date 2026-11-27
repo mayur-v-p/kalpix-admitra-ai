@@ -86,10 +86,7 @@ export function BusinessDetailsCard({
   };
 
   return (
-    <section
-      className="rounded-2xl border border-line bg-card p-5 shadow-soft"
-      aria-labelledby="biz-details"
-    >
+    <section className="kx-card rounded-[26px] p-6" aria-labelledby="biz-details">
       <h2 id="biz-details" className="font-sans text-lg font-medium tracking-normal normal-case">
         Business details for ads
       </h2>

@@ -1,13 +1,12 @@
-import type { RouteObject } from 'react-router-dom';
+import { Navigate, type RouteObject } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/app-layout';
 import { PublicLayout } from '@/components/layout/public-layout';
 import { RedirectIfSignedIn, RequireAuth } from '@/features/auth/route-guards';
 import { AccountPage } from '@/pages/app/account-page';
 import { BillingPage } from '@/pages/app/billing-page';
-import { BrandPage } from '@/pages/app/brand-page';
 import { BusinessPage } from '@/pages/app/business-page';
 import { CampaignNewPage } from '@/pages/app/campaign-new-page';
-import { CampaignsPage } from '@/pages/app/campaigns-page';
+import { AdsPage } from '@/pages/app/ads-page';
 import { DashboardPage } from '@/pages/app/dashboard-page';
 import { OnboardingPage } from '@/pages/app/onboarding-page';
 import { PaymentResultPage } from '@/pages/app/payment-result-page';
@@ -62,11 +61,13 @@ export const routes: RouteObject[] = [
           { index: true, element: <DashboardPage /> },
           { path: 'onboarding', element: <OnboardingPage /> },
           { path: 'business', element: <BusinessPage /> },
-          { path: 'brand', element: <BrandPage /> },
+          // Brand kit now lives on the Business page; Campaigns became My Ads.
+          { path: 'brand', element: <Navigate to="/app/business#brand" replace /> },
           { path: 'products', element: <ProductsPage /> },
           { path: 'products/new', element: <ProductPage /> },
           { path: 'products/:id', element: <ProductPage /> },
-          { path: 'campaigns', element: <CampaignsPage /> },
+          { path: 'ads', element: <AdsPage /> },
+          { path: 'campaigns', element: <Navigate to="/app/ads" replace /> },
           { path: 'campaigns/new', element: <CampaignNewPage /> },
           {
             // "Check your ad" after speaking; it plays the real ad, so Remotion loads only here.

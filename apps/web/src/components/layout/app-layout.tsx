@@ -1,14 +1,13 @@
 import {
-  Building2,
   CreditCard,
   LayoutDashboard,
   LogOut,
-  Megaphone,
   Menu,
   Package,
-  Palette,
   Shield,
+  Store,
   UserRound,
+  Video,
   X,
   type LucideIcon,
 } from 'lucide-react';
@@ -17,18 +16,17 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { amIPlatformAdmin } from '@/features/admin/api';
 import { useAuth } from '@/features/auth/auth-context';
+import { useCredits } from '@/features/exports/hooks';
 import { useWorkspace } from '@/features/workspace/hooks';
-import { cn } from '@/lib/utils';
 import { Logo } from './logo';
 
 type NavItem = { label: string; to: string; Icon: LucideIcon; soon?: string };
 
 const nav: NavItem[] = [
   { label: 'Dashboard', to: '/app', Icon: LayoutDashboard },
-  { label: 'Business', to: '/app/business', Icon: Building2 },
-  { label: 'Brand kit', to: '/app/brand', Icon: Palette },
+  { label: 'Business', to: '/app/business', Icon: Store },
   { label: 'Products', to: '/app/products', Icon: Package },
-  { label: 'Campaigns', to: '/app/campaigns', Icon: Megaphone },
+  { label: 'My Ads', to: '/app/ads', Icon: Video },
   { label: 'Billing', to: '/app/billing', Icon: CreditCard },
   { label: 'Account', to: '/app/account', Icon: UserRound },
 ];
@@ -60,14 +58,11 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
               to={to}
               end={to === '/app'}
               onClick={onNavigate}
-              className={({ isActive }) =>
-                cn(
-                  'flex min-h-11 items-center gap-3 rounded-xl px-3 transition-colors',
-                  isActive ? 'bg-ink text-paper' : 'text-ink hover:bg-ink/5',
-                )
-              }
+              className="kx-nav flex min-h-12 items-center gap-3 rounded-2xl px-3 font-medium text-ink"
             >
-              <Icon className="h-5 w-5" aria-hidden="true" />
+              <span className="kx-nav-ic flex h-9 w-9 items-center justify-center rounded-xl">
+                <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+              </span>
               {label}
             </NavLink>
           )}
@@ -81,6 +76,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
 export function AppLayout() {
   const { user, signOut } = useAuth();
   const { data } = useWorkspace();
+  const credits = useCredits(data?.workspace.id);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
@@ -103,12 +99,38 @@ export function AppLayout() {
     navigate('/login', { replace: true });
   };
 
+  const name = data?.business?.name ?? data?.workspace.name ?? 'My business';
   const account = (
-    <div className="border-t border-line pt-4">
-      <p className="truncate font-medium">
-        {data?.business?.name ?? data?.workspace.name ?? 'My business'}
-      </p>
-      <p className="truncate text-sm text-muted">{user?.is_anonymous ? 'Free try' : user?.email}</p>
+    <div className="flex flex-col gap-3">
+      <Link
+        to="/app/billing"
+        className="kx-credit relative block overflow-hidden rounded-2xl p-4 text-white"
+      >
+        <span className="relative block text-sm text-[#d8d6f5]">Credits</span>
+        <span className="relative mt-0.5 block font-display text-3xl leading-none">
+          {credits.data?.available ?? '–'} <span className="text-sm text-[#d8d6f5]">left</span>
+        </span>
+        <span className="relative mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20">
+          <span
+            className="kx-bar block h-full rounded-full bg-gradient-to-r from-[#f6c96f] to-[#e8b04b]"
+            style={{ width: `${Math.min(100, ((credits.data?.available ?? 0) / 10) * 100)}%` }}
+          />
+        </span>
+      </Link>
+      <div className="flex items-center gap-3 px-1">
+        <span
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#e8b04b] to-[#c2410c] font-display text-lg text-white"
+          aria-hidden="true"
+        >
+          {name.slice(0, 1).toUpperCase()}
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate font-medium">{name}</span>
+          <span className="block truncate text-sm text-muted">
+            {user?.is_anonymous ? 'Free try' : user?.email}
+          </span>
+        </span>
+      </div>
       <button
         type="button"
         onClick={onSignOut}
@@ -120,7 +142,7 @@ export function AppLayout() {
   );
 
   return (
-    <div className="min-h-dvh bg-paper lg:grid lg:grid-cols-[16rem_1fr]">
+    <div className="kx-app min-h-dvh lg:grid lg:grid-cols-[17rem_1fr]">
       <a
         href="#app-main"
         className="sr-only rounded-full bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
@@ -129,8 +151,8 @@ export function AppLayout() {
       </a>
 
       {/* Desktop sidebar (the column keeps its white background on long pages) */}
-      <div className="hidden border-r border-line bg-card lg:block">
-        <aside className="sticky top-0 flex h-dvh flex-col gap-6 p-5">
+      <div className="kx-side hidden lg:block">
+        <aside className="sticky top-0 flex h-dvh flex-col gap-6 overflow-y-auto p-5">
           <Logo />
           <nav aria-label="App" className="flex-1">
             <NavList />
@@ -167,7 +189,7 @@ export function AppLayout() {
             role="dialog"
             aria-modal="true"
             aria-label="App menu"
-            className="animate-fade-up absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] flex-col gap-6 bg-card p-5 shadow-billboard"
+            className="animate-fade-up absolute inset-y-0 right-0 flex w-[min(20rem,85vw)] flex-col gap-6 overflow-y-auto bg-card p-5 shadow-billboard"
           >
             <div className="flex items-center justify-between">
               <Logo />

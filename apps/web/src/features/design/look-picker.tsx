@@ -12,7 +12,7 @@ import {
 import '@admitra/styles-engine/src/composer/font-files';
 import { Player } from '@remotion/player';
 import { Check, Shuffle, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormMessage } from '@/components/ui/form-field';
 import { cn } from '@/lib/utils';
@@ -39,7 +39,10 @@ export function LookPicker({
   current,
   onPurpose,
   onUse,
+  autoStart = false,
 }: {
+  /** Design three looks as soon as the Studio opens (ads started with one tap). */
+  autoStart?: boolean;
   campaignId: string;
   purpose: Purpose;
   ctx: RecipeContext;
@@ -69,6 +72,15 @@ export function LookPicker({
       setBusy(false);
     }
   };
+
+  const started = useRef(false);
+  useEffect(() => {
+    if (!autoStart || started.current) return;
+    started.current = true;
+    // Deferred so the effect itself does not set state.
+    queueMicrotask(() => void design());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on open
+  }, [autoStart]);
 
   const choosePurpose = async (p: Purpose) => {
     if (p === purpose) return;

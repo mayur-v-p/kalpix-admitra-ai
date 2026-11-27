@@ -17,7 +17,9 @@ import { Player } from '@remotion/player';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Download, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { useBusinessPhotos } from '@/features/design/business-photos';
+import type { StudioState } from '@/features/design/quick-ad';
 import { Button } from '@/components/ui/button';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { FormMessage, TextAreaField, TextField } from '@/components/ui/form-field';
@@ -63,6 +65,7 @@ const copyErrors: Record<string, string> = {
 
 export function StudioPage() {
   const { id } = useParams();
+  const { state: routeState } = useLocation() as { state: StudioState | null };
   const queryClient = useQueryClient();
   const workspace = useWorkspace();
   const campaign = useCampaign(id);
@@ -78,6 +81,9 @@ export function StudioPage() {
   const sceneTypes = useSceneTypes(workspace.data?.business?.industry);
   const clip = useClip(campaign.data?.scene_clip_id);
   const sceneVideo = useSignedUrl(clip.data?.file_path, 'ai-clips');
+  const bizPhotos = useBusinessPhotos(workspace.data?.business?.id);
+  const businessPhoto =
+    bizPhotos.data?.find((p) => p.is_main)?.url ?? bizPhotos.data?.[0]?.url ?? null;
 
   const [aspect, setAspect] = useState<Aspect>('9:16');
   const [drafts, setDrafts] = useState<CopyDrafts | null>(null);
@@ -121,7 +127,8 @@ export function StudioPage() {
     location,
     brandKit,
     product: product.data ?? null,
-    productImageUrl: productUrl.data ?? null,
+    // No product ("Promote my business", greetings): the main business photo.
+    productImageUrl: c.product_id ? (productUrl.data ?? null) : businessPhoto,
     productOutline: outline.data ?? null,
     logoUrl: logoUrl.data ?? null,
     aspect,
@@ -135,7 +142,12 @@ export function StudioPage() {
     ),
   });
   // AI-designed look (Composer): the saved recipe is checked again every time it is drawn.
-  const ctx = recipeContext(c, business, product.data?.name ?? null, Boolean(productUrl.data));
+  const ctx = recipeContext(
+    c,
+    business,
+    product.data?.name ?? null,
+    Boolean(props.productImageUrl),
+  );
   const recipe = c.design ? checkRecipe(c.design, ctx) : null;
   const useComposer = c.style_id === 'composer' && recipe !== null;
   const extras = composerExtras(business);
@@ -283,12 +295,17 @@ export function StudioPage() {
                       onClick={() => {
                         if (s.id === 'composer') {
                           if (recipe) void save({ style_id: 'composer' });
-                          else document.getElementById('looks-title')?.scrollIntoView({ behavior: 'smooth' });
+                          else
+                            document
+                              .getElementById('looks-title')
+                              ?.scrollIntoView({ behavior: 'smooth' });
                         } else void save({ style_id: 'outline_highlight' });
                       }}
                       className={cn(
                         'inline-flex min-h-11 items-center rounded-full border px-4',
-                        active ? 'border-ink bg-ink text-paper' : 'border-line bg-card hover:border-ink/50',
+                        active
+                          ? 'border-ink bg-ink text-paper'
+                          : 'border-line bg-card hover:border-ink/50',
                       )}
                     >
                       {s.name}
@@ -334,6 +351,7 @@ export function StudioPage() {
             current={useComposer ? recipe : null}
             onPurpose={(p) => save({ purpose: p })}
             onUse={(r) => save({ style_id: 'composer', design: r })}
+            autoStart={Boolean(routeState?.autoDesign) && !c.design}
           />
         </section>
 
