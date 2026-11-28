@@ -11,6 +11,7 @@ import {
   type Purpose,
 } from '@admitra/styles-engine';
 import { composerExtras, recipeContext } from '@/features/design/api';
+import { AiEditPanel } from '@/features/design/ai-edit-panel';
 import { BusinessDetailsCard } from '@/features/design/business-details';
 import { LookPicker } from '@/features/design/look-picker';
 import { Player } from '@remotion/player';
@@ -44,6 +45,7 @@ import { useQrCode } from '@/features/exports/hooks';
 import { ConfirmFact } from '@/features/products/confirm-fact';
 import { useProduct, useProducts } from '@/features/products/hooks';
 import { adImagePath } from '@/features/products/ad-image';
+import { pictureFor, REPRESENTATION_NOTE, useProductPictures } from '@/features/products/pictures';
 import { useProductOutline } from '@/features/products/use-product-outline';
 import { sceneFor } from '@/features/scenes/api';
 import { useClip, useSceneTypes } from '@/features/scenes/hooks';
@@ -84,6 +86,12 @@ export function StudioPage() {
   const bizPhotos = useBusinessPhotos(workspace.data?.business?.id);
   const businessPhoto =
     bizPhotos.data?.find((p) => p.is_main)?.url ?? bizPhotos.data?.[0]?.url ?? null;
+  // AI pictures of the product. A product without a photo keeps checking until its first
+  // pictures are ready (they are made in the background right after it was added).
+  const pictures = useProductPictures(
+    campaign.data?.product_id,
+    Boolean(product.data && !product.data.image_path),
+  );
 
   const [aspect, setAspect] = useState<Aspect>('9:16');
   const [drafts, setDrafts] = useState<CopyDrafts | null>(null);
@@ -142,15 +150,25 @@ export function StudioPage() {
     ),
   });
   // AI-designed look (Composer): the saved recipe is checked again every time it is drawn.
+  const pictureList = pictures.data ?? [];
+  const mainUrl = props.productImageUrl ?? null;
   const ctx = recipeContext(
     c,
     business,
     product.data?.name ?? null,
-    Boolean(props.productImageUrl),
+    Boolean(mainUrl),
+    pictureList.filter((p) => p.use_in_ads).map((p) => p.id),
   );
   const recipe = c.design ? checkRecipe(c.design, ctx) : null;
+  // The picture the chosen design uses (same rule as the export).
+  const shown = pictureFor(recipe?.picture, pictureList, mainUrl);
+  const previewAd = { ...props, productImageUrl: shown.url };
   const useComposer = c.style_id === 'composer' && recipe !== null;
   const extras = composerExtras(business);
+  const previewExtras = {
+    ...extras,
+    imageNote: shown.picture?.kind === 'generated' ? REPRESENTATION_NOTE : null,
+  };
   const detailsNotice =
     useComposer &&
     !business.details_confirmed_at &&
@@ -219,7 +237,7 @@ export function StudioPage() {
                 <Player
                   key={`composer-${aspect}`}
                   component={Composer}
-                  inputProps={{ aspect, recipe, ad: props, extras }}
+                  inputProps={{ aspect, recipe, ad: previewAd, extras: previewExtras }}
                   durationInFrames={recipe.duration * FPS}
                   fps={FPS}
                   compositionWidth={width}
@@ -278,6 +296,20 @@ export function StudioPage() {
                 ))}
               </ul>
             </div>
+          )}
+
+          {useComposer && (
+            <AiEditPanel
+              campaignId={c.id}
+              recipe={recipe}
+              ctx={ctx}
+              brandColors={[
+                brandKit?.primary_color,
+                brandKit?.secondary_color,
+                brandKit?.accent_color,
+              ].filter((x): x is string => typeof x === 'string')}
+              onApply={(r) => save({ style_id: 'composer', design: r })}
+            />
           )}
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
@@ -352,6 +384,8 @@ export function StudioPage() {
             onPurpose={(p) => save({ purpose: p })}
             onUse={(r) => save({ style_id: 'composer', design: r })}
             autoStart={Boolean(routeState?.autoDesign) && !c.design}
+            pictures={pictureList}
+            mainUrl={mainUrl}
           />
         </section>
 

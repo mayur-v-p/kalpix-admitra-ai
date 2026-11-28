@@ -24,6 +24,8 @@ export type JsonCall = {
   temperature?: number;
   /** Answer size limit (reasoning models count their thinking in it too). */
   maxTokens?: number;
+  /** Photos the model should look at, as data: URLs (sent at low detail: cheap and fast). */
+  images?: string[];
 };
 
 export async function openaiJson<T>(call: JsonCall): Promise<T> {
@@ -41,7 +43,18 @@ export async function openaiJson<T>(call: JsonCall): Promise<T> {
       model,
       messages: [
         { role: 'system', content: call.system },
-        { role: 'user', content: call.user },
+        {
+          role: 'user',
+          content: call.images?.length
+            ? [
+                { type: 'text', text: call.user },
+                ...call.images.map((url) => ({
+                  type: 'image_url',
+                  image_url: { url, detail: 'low' },
+                })),
+              ]
+            : call.user,
+        },
       ],
       response_format: {
         type: 'json_schema',
@@ -53,7 +66,13 @@ export async function openaiJson<T>(call: JsonCall): Promise<T> {
     }),
   });
   // Never log the response body: it can echo what the owner said.
-  if (!res.ok) throw new Error(`openai_http_${res.status}`);
+  if (!res.ok) {
+    // Only OpenAI's error code and the name of the bad field: never its message, which can
+    // quote the request.
+    const err = res.status === 400 ? (await res.json().catch(() => null))?.error : null;
+    const detail = err ? ` ${String(err.code ?? '')} ${String(err.param ?? '')}`.slice(0, 120) : '';
+    throw new Error(`openai_http_${res.status}${detail}`);
+  }
   const data = await res.json();
   const message = data?.choices?.[0]?.message;
   if (!message || message.refusal) throw new Error('openai_refused');

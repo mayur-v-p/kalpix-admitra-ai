@@ -154,6 +154,8 @@ export type AdRecipe = {
   cta: string | null;
   rhythm: Rhythm;
   duration: 10 | 15;
+  /** Which AI picture of the product this design uses (an id); null = the main photo. */
+  picture?: string | null;
 };
 
 /** What the checker needs to know about the business. */
@@ -166,6 +168,8 @@ export type RecipeContext = {
   /** The owner's specialities / categories (chips may only use these). */
   specialities?: string[];
   hasPhoto: boolean;
+  /** Ids of the AI pictures the owner ticked for ads; a recipe may name only one of these. */
+  pictureIds?: string[];
 };
 
 // ------------------------------------------------------------------------------- colours
@@ -355,6 +359,10 @@ export function checkRecipe(raw: unknown, ctx: RecipeContext): AdRecipe {
     cta: safeWords(r.cta, 28, ctx),
     rhythm: oneOf(RHYTHMS, r.rhythm, 'lively'),
     duration: r.duration === 15 ? 15 : 10,
+    picture:
+      typeof r.picture === 'string' && (ctx.pictureIds ?? []).includes(r.picture)
+        ? r.picture
+        : null,
   };
 }
 

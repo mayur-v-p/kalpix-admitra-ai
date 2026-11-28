@@ -56,6 +56,7 @@ export {
   type ComposerProps,
 } from './composer/Composer';
 export * from './composer/recipe';
+export * from './composer/score';
 export { enterStyle, TIMING } from './composer/effects';
 export { FONTS, isDevanagari, type FontSpec } from './composer/fonts';
 

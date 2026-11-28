@@ -1,41 +1,37 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, RefreshCw, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { FormMessage } from '@/components/ui/form-field';
 import {
   confirmProductPrice,
   createProduct,
-  CutoutError,
   deleteProduct,
-  requestCutout,
+  requestEnhancedImage,
   updateProduct,
 } from '@/features/products/api';
 import { ConfirmFact } from '@/features/products/confirm-fact';
 import { EnhancedImage } from '@/features/products/enhanced-image';
 import { productKey, productsKey, useProduct } from '@/features/products/hooks';
 import { ProductForm } from '@/features/products/product-form';
-import { ProductImage } from '@/features/products/product-image';
+import { ProductPictures } from '@/features/products/product-pictures';
 import { formatPrice } from '@/features/products/schemas';
 import { useWorkspace } from '@/features/workspace/hooks';
 import { PageError, PageHeader, PageLoading } from './page-state';
 
-const cutoutMessages: Record<string, string> = {
-  rate_limited: 'You have processed a lot of photos this hour. Please try again a little later.',
-  already_processing: 'This photo is already being processed.',
-  no_image: 'Add a photo first.',
-};
+/** Set when the page opens right after saving: the first AI pictures are made straight away. */
+type ProductPageState = { makePictures?: boolean } | null;
 
 /** /app/products/new and /app/products/:id */
 export function ProductPage() {
   const { id } = useParams();
   const isNew = !id;
   const navigate = useNavigate();
+  const { state } = useLocation() as { state: ProductPageState };
   const queryClient = useQueryClient();
   const workspace = useWorkspace();
   const product = useProduct(id);
-  const [cutoutError, setCutoutError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -62,15 +58,12 @@ export function ProductPage() {
     ]);
   };
 
-  const cutout = async (productId: string) => {
-    setCutoutError(null);
+  // A new photo is made ad-ready with AI straight away (no cut-out); the card shows progress.
+  const enhance = async (productId: string) => {
     try {
-      await requestCutout(productId);
-    } catch (e) {
-      setCutoutError(
-        (e instanceof CutoutError && cutoutMessages[e.code]) ||
-          'We could not remove the background this time. You can try again.',
-      );
+      await requestEnhancedImage(productId);
+    } catch {
+      // The photo card shows the failed state and a "try again" button.
     } finally {
       await refresh(productId);
     }
@@ -92,66 +85,39 @@ export function ProductPage() {
       />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
-        <div className="rounded-2xl border border-line bg-card p-5 shadow-soft md:p-8">
-          <ProductForm
-            product={current}
-            submitLabel={isNew ? 'Save product' : 'Save changes'}
-            onSubmit={async (values, photo) => {
-              if (isNew) {
-                const created = await createProduct(
-                  { workspaceId: ws.id, businessId: business.id },
-                  values,
-                  photo,
-                );
-                await refresh(created.id);
-                navigate(`/app/products/${created.id}`, { replace: true });
-                if (created.image_path) void cutout(created.id);
-              } else if (current) {
-                const updated = await updateProduct(current, values, photo);
-                await refresh(updated.id);
-                if (photo) void cutout(updated.id);
-              }
-            }}
-          />
+        <div className="flex min-w-0 flex-col gap-8">
+          <div className="rounded-2xl border border-line bg-card p-5 shadow-soft md:p-8">
+            <ProductForm
+              product={current}
+              submitLabel={isNew ? 'Save product' : 'Save changes'}
+              onSubmit={async (values, photo) => {
+                if (isNew) {
+                  const created = await createProduct(
+                    { workspaceId: ws.id, businessId: business.id },
+                    values,
+                    photo,
+                  );
+                  await refresh(created.id);
+                  navigate(`/app/products/${created.id}`, {
+                    replace: true,
+                    state: { makePictures: true } satisfies ProductPageState,
+                  });
+                  if (created.image_path) void enhance(created.id);
+                } else if (current) {
+                  const updated = await updateProduct(current, values, photo);
+                  await refresh(updated.id);
+                  if (photo) void enhance(updated.id);
+                }
+              }}
+            />
+          </div>
+          {current && (
+            <ProductPictures product={current} autoStart={Boolean(state?.makePictures)} />
+          )}
         </div>
 
         {current && (
           <aside className="flex flex-col gap-6" aria-label="Ad readiness">
-            <section>
-              <h2 className="mb-2 font-sans text-base font-medium tracking-normal normal-case">
-                Cutout for ads
-              </h2>
-              <ProductImage
-                product={current}
-                className="aspect-square rounded-2xl border border-line"
-              />
-              {current.cutout_status === 'ready' && (
-                <p className="mt-2 text-sm text-muted">
-                  Background removed
-                  {current.cutout_provider === 'mock' ? ' (test mode: original photo used)' : ''}.
-                </p>
-              )}
-              {(current.cutout_status === 'failed' || cutoutError) && (
-                <div className="mt-3">
-                  <FormMessage tone="error">
-                    {cutoutError ?? current.cutout_error ?? 'Background removal failed.'}
-                  </FormMessage>
-                  <Button
-                    variant="outline"
-                    className="mt-2 w-full"
-                    onClick={() => cutout(current.id)}
-                  >
-                    <RefreshCw className="h-4 w-4" aria-hidden="true" /> Try again
-                  </Button>
-                </div>
-              )}
-              {current.image_path && current.cutout_status === 'pending' && !cutoutError && (
-                <Button variant="ghost" className="mt-2 w-full" onClick={() => cutout(current.id)}>
-                  <RefreshCw className="h-4 w-4" aria-hidden="true" /> Process photo now
-                </Button>
-              )}
-            </section>
-
             <EnhancedImage product={current} onChanged={() => refresh(current.id)} />
 
             <section>

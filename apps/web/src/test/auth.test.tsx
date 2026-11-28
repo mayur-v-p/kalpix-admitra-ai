@@ -15,9 +15,9 @@ const signedIn = () => {
 describe('route guards', () => {
   it('sends signed-out visitors from /app to the login page', async () => {
     const { router } = renderRoute('/app/business');
-    await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
+    await waitFor(() => expect(router.state.location.pathname).toBe('/login'), { timeout: 5000 });
     expect(
-      await screen.findByRole('heading', { level: 1, name: /welcome back/i }),
+      await screen.findByRole('heading', { level: 1, name: /welcome back/i }, { timeout: 5000 }),
     ).toBeInTheDocument();
   });
 

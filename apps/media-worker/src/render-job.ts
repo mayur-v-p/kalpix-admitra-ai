@@ -28,7 +28,12 @@ import { join } from 'node:path';
 import { config } from './config';
 
 export type JobParams = FactSnapshot & {
-  assets: { productImagePath: string | null; logoPath: string | null };
+  assets: {
+    productImagePath: string | null;
+    logoPath: string | null;
+    /** Set when the picture was made by AI from words (M11). */
+    imageNote?: string | null;
+  };
   qrCode: string | null;
   watermark: boolean;
   /** Free try: render at half resolution (set by the database for trial workspaces). */
@@ -157,7 +162,12 @@ export async function renderJob(opts: {
         if (sectorOf(s.business.industry) === 'real_estate' && !extras.registration) {
           throw new PermanentError('Property ads need a confirmed RERA number.');
         }
-        inputProps = { aspect, recipe, ad: props, extras };
+        inputProps = {
+          aspect,
+          recipe,
+          ad: props,
+          extras: { ...extras, imageNote: p.assets?.imageNote ?? null },
+        };
         compositionId = 'Composer';
         posterFrame = recipe.duration * FPS - FPS; // one second before the end: everything is in
       } else {

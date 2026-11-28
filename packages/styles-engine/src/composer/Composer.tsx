@@ -17,6 +17,8 @@ export type ComposerExtras = {
   hours?: string | null;
   /** Confirmed registration line, e.g. "MahaRERA No. P521…" (required for real estate). */
   registration?: string | null;
+  /** "Image for representation only": the ad uses an AI picture made from words, not a photo. */
+  imageNote?: string | null;
 };
 
 export type ComposerProps = {
@@ -1318,6 +1320,23 @@ export function Composer({ recipe: r, ad, extras }: ComposerProps) {
           }}
         >
           <QrCode value={ad.qrUrl} size={u * 16} />
+        </div>
+      )}
+      {extras?.imageNote && (
+        <div
+          style={{
+            position: 'absolute',
+            right: u * 2,
+            top: u * 2,
+            padding: `${u * 0.6}px ${u * 1.4}px`,
+            borderRadius: u * 2,
+            background: 'rgba(0, 0, 0, 0.45)',
+            color: '#ffffff',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: u * 2.2,
+          }}
+        >
+          {extras.imageNote}
         </div>
       )}
       {ad.watermark && (

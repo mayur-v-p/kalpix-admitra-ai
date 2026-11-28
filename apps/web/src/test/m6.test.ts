@@ -122,14 +122,15 @@ describe('image used on ads', () => {
     use_enhanced: false,
   };
 
-  it('uses the cutout until the owner chooses the enhanced image', () => {
-    expect(adImagePath(p)).toBe('ws/cutout.png');
+  // M11: cut-outs are retired; the whole photo is used.
+  it('uses the whole photo until the enhanced one is chosen', () => {
+    expect(adImagePath(p)).toBe('ws/photo.jpg');
     expect(adImagePath({ ...p, use_enhanced: true })).toBe('ws/enhanced.png');
   });
 
   it('never uses an enhanced image that is not ready', () => {
     expect(adImagePath({ ...p, use_enhanced: true, enhanced_status: 'processing' })).toBe(
-      'ws/cutout.png',
+      'ws/photo.jpg',
     );
     expect(adImagePath({ ...p, cutout_status: 'failed' })).toBe('ws/photo.jpg');
   });

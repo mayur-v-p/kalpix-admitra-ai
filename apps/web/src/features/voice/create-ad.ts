@@ -1,7 +1,12 @@
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database';
 import { confirmCampaignFacts } from '@/features/campaigns/api';
-import { confirmProductPrice, requestCutout, uploadProductPhoto } from '@/features/products/api';
+import {
+  confirmProductPrice,
+  requestEnhancedImage,
+  uploadProductPhoto,
+} from '@/features/products/api';
+import { makePictures } from '@/features/products/pictures';
 import {
   campaignName,
   offerText,
@@ -104,7 +109,10 @@ export async function createAdFromVoice(
         .single(),
     );
     productId = created.id;
-    if (image_path) void requestCutout(productId).catch(() => undefined); // the background is removed in the background
+    // In the background: the photo is made ad-ready with AI, and three AI pictures are made
+    // (new scenes with the product, or pictures from its name when there is no photo).
+    if (image_path) void requestEnhancedImage(productId).catch(() => undefined);
+    void makePictures(productId).catch(() => undefined);
   }
   if (productId && a.price) await confirmProductPrice(productId);
 

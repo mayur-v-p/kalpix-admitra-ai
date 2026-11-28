@@ -987,6 +987,58 @@ export type Database = {
         };
         Relationships: [];
       };
+      product_pictures: {
+        Row: {
+          created_at: string;
+          id: string;
+          kind: string;
+          label: string | null;
+          path: string;
+          product_id: string;
+          provider: string | null;
+          use_in_ads: boolean;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          kind: string;
+          label?: string | null;
+          path: string;
+          product_id: string;
+          provider?: string | null;
+          use_in_ads?: boolean;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          kind?: string;
+          label?: string | null;
+          path?: string;
+          product_id?: string;
+          provider?: string | null;
+          use_in_ads?: boolean;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'product_pictures_product_id_workspace_id_fkey';
+            columns: ['product_id', 'workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id', 'workspace_id'];
+          },
+          {
+            foreignKeyName: 'product_pictures_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       products: {
         Row: {
           archived_at: string | null;

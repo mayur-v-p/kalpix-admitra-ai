@@ -1,5 +1,7 @@
-// enhance-product-image: makes an AI-enhanced version of a product's image for the owner to
-// compare. Nothing changes on any ad until the owner chooses it (choose_product_image).
+// enhance-product-image: makes an AI-enhanced version of the owner's product photo (better
+// light, colour, sharpness and background; the product itself kept the same). The website
+// calls it right after a photo is added. With a real provider the ads use the enhanced photo
+// by default; the owner can go back to the original any time (choose_product_image).
 // POST { productId }  ->  { status: 'ready', provider }
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { extensionFor } from '../_shared/background-removal.ts';
@@ -8,6 +10,8 @@ import { getImageEnhancer } from '../_shared/image-enhancer.ts';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_PER_HOUR = 10;
+/** Free try (anonymous): one product, so a few enhancements an hour are plenty. */
+const MAX_PER_HOUR_TRY = 3;
 
 const env = (...names: string[]) => {
   for (const n of names) {
@@ -33,7 +37,7 @@ Deno.serve(async (req) => {
   const { data: userData, error: userError } = await asUser.auth.getUser();
   if (userError || !userData.user) return json(req, { error: 'unauthorized' }, 401);
   // Free try: AI image editing costs money per call, so it needs a real account.
-  if (userData.user.is_anonymous) return json(req, { error: 'sign_up_required' }, 403);
+  const isTry = userData.user.is_anonymous === true;
 
   let productId: unknown;
   try {
@@ -61,17 +65,14 @@ Deno.serve(async (req) => {
   });
   const { data: allowed, error: limitError } = await admin.rpc('consume_rate_limit', {
     p_key: `enhance:${product.workspace_id}`,
-    p_max: MAX_PER_HOUR,
+    p_max: isTry ? MAX_PER_HOUR_TRY : MAX_PER_HOUR,
     p_window_seconds: 3600,
   });
   if (limitError) return json(req, { error: 'server_error' }, 500);
   if (!allowed) return json(req, { error: 'rate_limited' }, 429);
 
-  // Enhance the clean cutout when there is one; otherwise the original photo.
-  const source =
-    product.cutout_status === 'ready' && product.cutout_path
-      ? product.cutout_path
-      : product.image_path;
+  // Always the owner's original photo (no cut-out): the whole photo, made ad-ready.
+  const source = product.image_path;
   await admin
     .from('products')
     .update({ enhanced_status: 'processing', use_enhanced: false })
@@ -99,6 +100,8 @@ Deno.serve(async (req) => {
         enhanced_path: newPath,
         enhanced_status: 'ready',
         enhanced_provider: result.provider,
+        // A real enhancement is used on ads straight away; test mode changes nothing.
+        use_enhanced: result.provider !== 'mock',
       })
       .eq('id', product.id)
       .eq('image_path', product.image_path)

@@ -87,8 +87,16 @@ const RECIPE = {
     'cta',
     'rhythm',
     'duration',
+    'why',
+    'picture',
   ],
   properties: {
+    picture: nullableStr(
+      'id of the picture this design uses, copied exactly from the "pictures" list; null for the main photo',
+    ),
+    why: str(
+      'one short sentence in simple English for the owner: why this design suits their business (and photo), at most 110 characters',
+    ),
     name: str('2-3 word name for this look, English, e.g. "Warm Glow"'),
     layout: en(LAYOUTS),
     background: en(BACKGROUNDS),
@@ -146,11 +154,69 @@ const RECIPE = {
   },
 };
 
+const PHOTO_READING = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['subject', 'colours', 'mood', 'sharp', 'good_light', 'tip'],
+  properties: {
+    subject: str('what the photo shows, one short plain-English sentence, at most 90 characters'),
+    colours: {
+      type: 'array',
+      description: 'the 3 main colours of the photo',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['name', 'hex'],
+        properties: { name: str('simple colour name, e.g. "Tea brown"'), hex: hex('the colour') },
+      },
+    },
+    mood: { type: 'array', items: { type: 'string' }, description: '2 or 3 one-word moods' },
+    sharp: { type: 'boolean', description: 'is the main subject sharp and in focus' },
+    good_light: { type: 'boolean', description: 'is the photo bright enough and well lit' },
+    tip: nullableStr(
+      'one friendly tip to make the photo better for an ad, at most 110 characters; null if it is already good',
+    ),
+  },
+};
+
 export const DESIGN_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['designs'],
-  properties: { designs: { type: 'array', items: RECIPE } },
+  required: ['photo', 'designs'],
+  properties: {
+    photo: { anyOf: [PHOTO_READING, { type: 'null' }] },
+    designs: { type: 'array', items: RECIPE },
+  },
+};
+
+/** The AI edit: the changed design, what changed, and whether the owner asked to change a fact. */
+export const EDIT_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['design', 'changes', 'facts_request'],
+  properties: {
+    design: RECIPE,
+    changes: {
+      type: 'array',
+      description: '1 to 4 changes you made, for the owner to read',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['title', 'detail'],
+        properties: {
+          title: str('2-4 words, simple English, e.g. "Bigger photo"'),
+          detail: str(
+            'what you changed, one short simple-English sentence, at most 120 characters',
+          ),
+        },
+      },
+    },
+    facts_request: {
+      type: 'boolean',
+      description:
+        'true if the owner asked to change a price, discount, offer, date, time, phone or address',
+    },
+  },
 };
 
 export type DesignBrief = {
@@ -168,6 +234,8 @@ export type DesignBrief = {
   hasPrice: boolean;
   /** Looks already shown, so new ones differ. */
   avoid: string[];
+  /** AI pictures of the product the owner ticked for ads (id + what it shows). */
+  pictures?: { id: string; label: string | null; kind: string }[];
 };
 
 const LANGUAGE: Record<DesignBrief['language'], string> = {
@@ -188,31 +256,76 @@ const PURPOSE: Record<string, string> = {
 
 const HEALTH = ['clinic', 'pharmacy', 'diagnostics'];
 
+/** What a good ad designer knows, written once for every design and edit call. */
+const CRAFT = [
+  'How a good designer works:',
+  '- One clear hero: the photo OR the headline, never both fighting. Leave space around it.',
+  '- A phone ad is seen for 2 seconds: a headline of 2 to 5 words; the tagline is optional and short.',
+  '- Colour: build the palette from the photo (pick one of its colours as the accent) or from the brand colours. One strong accent and calm backgrounds. No muddy mixes; neon only for young, loud businesses.',
+  '- Fonts: elegant or editorial for boutiques, jewellery, salons and real estate; bold for gyms, sales and street food; friendly for cafes, sweets and schools; modern for clinics, tech and services. Handwritten only for short, warm lines.',
+  '- Motion: calm for health, real estate and boutiques; lively for cafes, food and events; punchy for gyms and sales. Festival accents (diyas, rangoli, confetti) only for festivals and openings.',
+  '- Good examples. Cafe with a warm cup photo: cream background, coffee-brown ink, clay accent, arch photo, friendly fonts, steam accent, calm. Gym: near-black background, lime accent, bold upper-case headline, full photo, punchy. Clinic: white to soft mint, deep green ink, rounded photo, modern fonts, no badge, calm.',
+].join('\n');
+
+const RULES = (b: DesignBrief) => [
+  'Hard rules:',
+  '- NEVER write numbers, prices, discounts, percentages, dates, times, phone numbers or addresses. The app adds those from confirmed details.',
+  '- Do not invent facts or promises (no "free", "best in town", "No. 1", "since ...").',
+  "- chips: only words copied exactly from the owner's specialities list, or an empty list.",
+  '- Colours: choose any colours, but they must be readable: ink needs at least 4.5:1 contrast on BOTH bg and bg2, accent at least 3:1 on both (on light backgrounds use a deep accent, e.g. #9a4a1f not #e08b4a), and onAccent at least 4.5:1 on accent.',
+  b.hasPhoto
+    ? '- There is a product or shop photo: use a photo shape (not "none").'
+    : '- There is NO photo: use photo shape "none", and do not use photo_band, story or photo_zoom.',
+  HEALTH.includes(b.sector)
+    ? '- Healthcare: calm, trustworthy and clean. No claims of cure, results, guarantees, "best" or superlatives, no fear. Only describe services and care.'
+    : '',
+];
+
+/** Instructions for changing one design the way the owner asked. */
+export function editInstructions(b: DesignBrief): string {
+  return [
+    `You are the art director of Kalpix. The owner of an Indian ${b.sector.replace('_', ' ')} business wants to change their animated vertical video ad.`,
+    'You get the current design and what the owner asked (any language, often Hindi or Hinglish). Return the whole design with ONLY the asked change made; keep everything else the same, including the name.',
+    `Ad words stay in ${LANGUAGE[b.language]}.`,
+    'If the owner asks to change a price, discount, offer, date, time, phone or address: set facts_request to true and return the design unchanged with an empty changes list. You cannot change facts.',
+    'If the request is unclear, make the most likely small change and say so in the change detail.',
+    '',
+    CRAFT,
+    '',
+    ...RULES(b),
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
+
 export function designInstructions(b: DesignBrief, count: number): string {
   return [
     `You are the art director of Kalpix, designing short animated vertical video ads for an Indian ${b.sector.replace('_', ' ')} business.`,
     `Create ${count} designs that look clearly DIFFERENT from each other: different layout, background, colour mood, fonts and motion. Make them attractive, modern and tasteful, like a good designer's work, not generic.`,
+    count >= 3
+      ? 'Vary the colour mood across the set: at least two DARK designs (deep background, light text) and at least two LIGHT ones; the photo colours guide the accents, not every background.'
+      : '',
     `Ad purpose: ${PURPOSE[b.purpose] ?? PURPOSE.promote}.`,
     `Write all ad words in ${LANGUAGE[b.language]}. Keep them short, warm and local.`,
+    'Each design also gets "why": one simple sentence telling the owner why it suits them.',
     '',
-    'Hard rules:',
-    '- NEVER write numbers, prices, discounts, percentages, dates, times, phone numbers or addresses. The app adds those from confirmed details.',
-    '- Do not invent facts or promises (no "free", "best in town", "No. 1", "since ...").',
-    "- chips: only words copied exactly from the owner's specialities list, or an empty list.",
-    '- Colours: choose any colours, but ink must read clearly on bg and bg2, and onAccent on accent.',
+    CRAFT,
+    '',
     b.hasPhoto
-      ? '- There is a product or shop photo: use a photo shape (not "none"); photo_band and story layouts suit strong photos.'
-      : '- There is NO photo: use photo shape "none", and do not use photo_band, story or photo_zoom.',
+      ? 'The photo the ad will use is attached. Look at it first and fill "photo": what it shows, its 3 main colours, its mood, whether it is sharp and well lit, and one tip if it could be better. Then design FOR this photo: colours that suit it, a shape that frames it. photo_band and story layouts suit strong photos.'
+      : 'There is no photo: set "photo" to null.',
+    '',
+    ...RULES(b),
     b.hasOffer
       ? '- There is an offer: choose a badge other than "none" in at least two designs.'
       : '- There is no offer: prefer badge "none" or "pill".',
-    HEALTH.includes(b.sector)
-      ? '- Healthcare: calm, trustworthy and clean. No claims of cure, results, guarantees, "best" or superlatives, no fear. Only describe services and care.'
-      : '',
     b.sector === 'real_estate'
       ? '- Real estate: premium and calm; the RERA number is added by the app.'
       : '',
     b.avoid.length ? `- Already shown looks (make new ones different): ${b.avoid.join(', ')}.` : '',
+    b.pictures?.length
+      ? '- "pictures" lists more pictures of the product. Give each design a different picture where you can (null = the main photo), and choose layouts and colours that suit that picture.'
+      : '- Set "picture" to null.',
   ]
     .filter(Boolean)
     .join('\n');
@@ -229,6 +342,12 @@ export function designFacts(b: DesignBrief): string {
     has_photo: b.hasPhoto,
     has_offer: b.hasOffer,
     has_price: b.hasPrice,
+    pictures: (b.pictures ?? []).map((p) => ({
+      id: p.id,
+      shows: p.label,
+      kind:
+        p.kind === 'generated' ? 'AI picture made from the name' : 'AI scene with the real product',
+    })),
   });
 }
 
@@ -248,5 +367,65 @@ export function scrubDesign(d: Record<string, unknown>, own: string[]): Record<s
     headline: { ...h, text: clean(h.text), accent: clean(h.accent) },
     tagline: clean(d.tagline),
     cta: clean(d.cta),
+    why: plain(d.why, 130),
   };
+}
+
+/** Plain text for the owner to read (not drawn on the ad): no control characters or tags. */
+function plain(v: unknown, max: number): string | null {
+  if (typeof v !== 'string') return null;
+  const s = v
+    .replace(/[\u0000-\u001f\u007f<>{}]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return s ? s.slice(0, max) : null;
+}
+
+export type PhotoReading = {
+  subject: string | null;
+  colours: { name: string; hex: string }[];
+  mood: string[];
+  sharp: boolean;
+  goodLight: boolean;
+  tip: string | null;
+};
+
+/** What the AI saw in the photo, checked: short plain text and real hex colours only. */
+export function scrubPhoto(raw: unknown): PhotoReading | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const colours = (Array.isArray(r.colours) ? r.colours : [])
+    .map((c) => {
+      const o = (c ?? {}) as Record<string, unknown>;
+      const name = plain(o.name, 24);
+      const hex = typeof o.hex === 'string' && /^#[0-9a-f]{6}$/i.test(o.hex) ? o.hex : null;
+      return name && hex ? { name, hex: hex.toLowerCase() } : null;
+    })
+    .filter((c): c is { name: string; hex: string } => c !== null)
+    .slice(0, 3);
+  const mood = (Array.isArray(r.mood) ? r.mood : [])
+    .map((m) => plain(m, 16))
+    .filter((m): m is string => Boolean(m))
+    .slice(0, 3);
+  return {
+    subject: plain(r.subject, 110),
+    colours,
+    mood,
+    sharp: r.sharp !== false,
+    goodLight: r.good_light !== false,
+    tip: plain(r.tip, 130),
+  };
+}
+
+export type DesignChange = { title: string; detail: string };
+
+export function scrubChanges(raw: unknown): DesignChange[] {
+  return (Array.isArray(raw) ? raw : [])
+    .map((c) => {
+      const o = (c ?? {}) as Record<string, unknown>;
+      const title = plain(o.title, 40);
+      return title ? { title, detail: plain(o.detail, 140) ?? '' } : null;
+    })
+    .filter((c): c is DesignChange => c !== null)
+    .slice(0, 4);
 }

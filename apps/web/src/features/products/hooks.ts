@@ -4,10 +4,10 @@ import { getProduct, listProducts, type Product } from './api';
 export const productsKey = (workspaceId: string | undefined) => ['products', workspaceId] as const;
 export const productKey = (id: string | undefined) => ['product', id] as const;
 
-const busy = (p: Product | null | undefined) =>
-  p?.cutout_status === 'pending' || p?.cutout_status === 'processing';
+// Cut-outs are retired (M11): only the AI enhancement runs in the background now.
+const busy = (p: Product | null | undefined) => p?.enhanced_status === 'processing';
 
-/** Product list. Refreshes every 2 s while any cutout is still being made. */
+/** Product list. Refreshes every 2 s while a photo is being enhanced. */
 export function useProducts(workspaceId: string | undefined) {
   return useQuery({
     queryKey: productsKey(workspaceId),
