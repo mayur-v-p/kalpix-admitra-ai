@@ -22,7 +22,7 @@ const currentDiscount = (offer: string | null) =>
   Number(offer?.match(/(\d{1,2})% OFF/)?.[1] ?? 0) || undefined;
 
 /**
- * "Change something" in the Studio: one spoken change at a time. Changes to a price or a
+ * "Change the details" in the Studio: one spoken change at a time. Changes to a price or a
  * discount are read back and confirmed (the same confirmation as the forms) before the ad
  * may use them; button and language changes apply at once.
  */
@@ -145,8 +145,11 @@ export function StudioVoiceBar({
       className="rounded-3xl border border-line bg-card p-5 shadow-soft"
     >
       <h2 id="voice-change" className="font-sans text-base font-semibold tracking-normal">
-        Change something
+        Change the details
       </h2>
+      <p className="mt-1 text-sm text-muted">
+        Say a new price, discount, dates or language, e.g. “discount 30 percent karo”.
+      </p>
       <div className="mt-3 flex gap-2">
         {supported && (
           <button

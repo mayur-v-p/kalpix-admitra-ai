@@ -8,10 +8,10 @@ import { canListen, listenOnce, type SpeechLang } from '@/features/voice/speech'
 import { editDesign, QUICK_EDITS, type DesignChange, type QuickEdit } from './ai-edit';
 
 const FACTS_NOTE =
-  'Prices, offers, dates, phone and address are your facts, so AI never changes them. Change them in “Offer and dates”, or on the Products and Business pages.';
+  'Prices, offers, dates, phone and address are your facts, so AI never changes them. Change them with “Change the details” (by voice), in “Offer and dates”, or on the Products and Business pages.';
 
 /**
- * "Change something": say or type a change, or tap a suggestion. The preview above updates and
+ * "Change the design": say or type a change, or tap a suggestion. The preview above updates and
  * the change is saved; "Undo last change" goes back one step.
  */
 export function AiEditPanel({
@@ -102,7 +102,7 @@ export function AiEditPanel({
             id="ai-edit-title"
             className="flex items-center gap-2 font-sans text-xl font-medium tracking-normal normal-case"
           >
-            <Wand2 className="h-5 w-5 text-lamp" aria-hidden="true" /> Change something
+            <Wand2 className="h-5 w-5 text-lamp" aria-hidden="true" /> Change the design
           </h2>
           <p className="text-muted">Say or type what you want different. The preview updates.</p>
         </div>

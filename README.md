@@ -40,8 +40,9 @@ them). **No secret key is needed** to start the app or try the main flow.
 3. Check the list. Tap any line to change it, or press **Fill by voice** and answer Kalpix's
    questions (*"कीमत कितनी है?"*: "pandrah sau"). The sale price is worked out by code.
 4. Press **Create ad**. Kalpix reads the details back; tap **हाँ, ऐड बनाइए** (or say "haan").
-5. The **Studio** opens with your animated ad playing. Try **Change something**: say
-   *"discount 30 percent karo"* or *"English mein karo"*.
+5. The **Studio** opens with your animated ad playing. Try **Change the details**: say
+   *"discount 30 percent karo"* or *"English mein karo"*. Press **Design my ad** for six AI
+   designs, then **Change the design**: *"thoda festive banao"*.
 
 ### What needs a key (and what happens without one)
 
@@ -50,7 +51,7 @@ them). **No secret key is needed** to start the app or try the main flow.
 | Speak your ad, understanding the request, spoken read-back | Works: the browser's speech tools + Kalpix's own parser for Hindi/Marathi/Hinglish numbers, dates and offers |
 | **AI understanding** of free-style requests (OpenAI, `OPENAI_API_KEY` on the server) | Kalpix's own parser answers instead. With the key, the AI's reading is shown on the same "Check your ad" screen, labelled "Understood by AI", and still has to be checked and confirmed |
 | **AI art director**: looks at the ad's photo (what is in it, its colours and mood, a photo tip), makes 6 animated designs per tap ("Pick a look": layout, motion, colours, fonts, words) for any sector (café, clinic, gym, real estate, ...) and purpose (promote, menu, opening, festival, offer), scores each (easy to read, contrast, suits the photo) and shows the best 3 that differ, with the other 3 and why they were left out (same key) | A rule-based "surprise" designer makes 6 looks from the same kit, scored and picked the same way. Facts on the ad always come from confirmed fields; health ads cannot carry claims; property ads must show a confirmed RERA number |
-| **AI edit** in the Studio ("Change something"): say or type a change ("thoda festive banao", "bigger photo") and the design changes; "What changed" lists it; undo goes back (same key, Edge Function `edit-design`) | The suggestion buttons (More festive, Bigger photo, Use my brand colours, Shorter headline, Calmer) make simple rule-based changes. A request to change a price, offer, date, phone or address is refused either way |
+| **AI edit** in the Studio ("Change the design"): say or type a change ("thoda festive banao", "bigger photo") and the design changes; "What changed" lists it; undo goes back (same key, Edge Function `edit-design`) | The suggestion buttons (More festive, Bigger photo, Use my brand colours, Shorter headline, Calmer) make simple rule-based changes. A request to change a price, offer, date, phone or address is refused either way |
 | **AI ad text** in Hindi/Marathi/English (same key) | Ready-made sample lines, labelled "Test mode". The AI never writes prices, discounts, numbers or dates; the server drops any line that does |
 | Animated ad preview in the Studio | Works: rendered live in the browser |
 | **Ad-ready photos and AI pictures** (OpenAI `gpt-image-2`, same key): a product photo is enhanced straight away (light, colour, background; the product kept the same) and used on ads, with "Your photo" one tap away. Three **AI scenes** put the same product in new settings; a product **without a photo** gets three **AI pictures made from its name**. The owner ticks which ones ads may use, and each design in "Pick a look" can use a different one. Ads using a picture made from a name show "Image for representation only" | Photos are used as they are; a product without a photo makes text-only designs. Cut-outs (background removal) are no longer used: ads frame the whole photo |

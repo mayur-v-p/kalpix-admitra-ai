@@ -1,4 +1,4 @@
-// "Change something" in the Studio: the owner says or types a change, and the AI art director
+// "Change the design" in the Studio: the owner says or types a change, and the AI art director
 // (Edge Function edit-design) returns the same design with only that change.
 //
 // Without an AI key (or if the AI fails) the suggestion buttons still work with the simple,
